@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
-# Operator-run utility. DRY_RUN=1 validates and previews without GitHub calls.
+# Stellar Wave backlog tool. Dry run by default: validates scripts/wave-issues.json
+# and prints totals without any GitHub call. Mutations need an explicit flag:
+#   ./scripts/create-issues.sh                  # validate only
+#   ./scripts/create-issues.sh --emit out.json  # write rendered issues
+#   ./scripts/create-issues.sh --create         # operator: create missing issues
+#   ./scripts/create-issues.sh --sync-existing  # operator: restyle linked issues
 set -euo pipefail
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-args=(--repo "${REPO:-Soroban-CII/soroindex}")
-if [[ "${DRY_RUN:-0}" != 1 ]]; then args+=(--create); fi
-exec python3 "$script_dir/wave_issues.py" "${args[@]}"
+exec python3 "$script_dir/wave_issues.py" --repo "${REPO:-Soroban-CII/soroindex}" "$@"
