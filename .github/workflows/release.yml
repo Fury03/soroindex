@@ -33,7 +33,7 @@ concurrency:
 
 env:
   # Exact build pin from go.mod's toolchain line (CLAUDE.md §3).
-  GO_VERSION: "1.27.3"
+  GO_VERSION: "1.27.4"
   GOTOOLCHAIN: local
   RELEASE_TAG: ${{ github.event.inputs.tag || github.ref_name }}
 

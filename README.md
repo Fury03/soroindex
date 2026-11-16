@@ -31,7 +31,7 @@ Almost no contract declares what it implements yet. So this project leads with t
 
 ## Quick start
 
-[v0.1.0](https://github.com/Soroban-CII/soroindex/releases/tag/v0.1.0) was released on 9 November 2026, with static `sep47idx` binaries for linux and macOS (amd64 and arm64) and a `SHA256SUMS` file. No container image is published, so build the image from the `Dockerfile` as shown below. Building from source needs Go 1.27.3; no Rust or CGO.
+[v0.1.0](https://github.com/Soroban-CII/soroindex/releases/tag/v0.1.0) was released on 9 November 2026, with static `sep47idx` binaries for linux and macOS (amd64 and arm64) and a `SHA256SUMS` file. No container image is published, so build the image from the `Dockerfile` as shown below. Building from source needs Go 1.27.4; no Rust or CGO.
 
 ```sh
 git clone https://github.com/Soroban-CII/soroindex

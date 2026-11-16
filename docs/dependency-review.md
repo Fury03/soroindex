@@ -20,6 +20,14 @@ The verified Linux archive checksum was
 `ecbadb99091a3f46e31f5f934b068b1864eafa7995211b39eaddf76996045fe5`.
 Updating the build pin removed those findings. The language floor stays 1.26.0.
 
+On 16 November 2026 both govulncheck jobs reported GO-2026-6859 (HTTP/1 server
+crash due to a `MaxBytesReader` header race in `net/http`), found in the go1.27.3
+standard library and fixed in go1.27.4. The symbol scan traces it through the RPC
+client's response reads and the API server's response writes. The build pin moved to
+go1.27.4 in `go.mod`, every workflow and the Dockerfile (`golang:1.27.4-bookworm`
+index digest `sha256:4fa7c968ba93f1635670522dbb01a2c78150443e1385746924566079f36570ea`).
+The language floor is unchanged.
+
 A remaining module-only finding was GO-2026-5841 in `klauspost/compress` 1.17.6.
 The affected `s2` package was not imported, but the dependency was updated to
 1.18.7, the latest patched release in that minor line checked at the module proxy.

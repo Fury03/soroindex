@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Build with Go 1.27.4 for GO-2026-6859 (net/http `MaxBytesReader` header race in
+  the HTTP/1 server), reported by the security workflow on 16 November 2026.
+
 ## v0.1.0 — 9 November 2026
 
 Released from commit `3abe5a3`. The release candidate was first cut on 9 October 2026.
