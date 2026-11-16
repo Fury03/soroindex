@@ -98,7 +98,7 @@ record the reason and obtain the required operator review before implementation.
 - Refill the backlog only with demonstrable remaining work. Review
   `scripts/wave-issues.json` against merged code and existing open/closed issues;
   remove solved or duplicate proposals and keep concrete acceptance criteria and
-  valid pointers. Preview `DRY_RUN=1 ./scripts/create-issues.sh` before the operator
+  valid pointers. Run `./scripts/create-issues.sh` (a dry run) before the operator
   publishes the batch. Do not run account mutations from an unattended cadence.
 - Review contributor PRs within **48 hours**. If blocked, acknowledge the PR,
   explain the blocker and give a realistic next review time. The target is a

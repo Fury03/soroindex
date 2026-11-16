@@ -91,7 +91,7 @@ SEP-47 (contract interface discovery) and SEP-48 (contract interface specificati
 
 ## Contributing
 
-The [Wave application package](docs/wave/APPLICATION.md) separates what is built from the 25 remaining issues in [`scripts/wave-issues.json`](scripts/wave-issues.json). All of them are open on GitHub with the `Stellar Wave` label. Add only substantive unsolved work. Read [CONTRIBUTING.md](CONTRIBUTING.md) for setup, `make` targets and the commit rules. Security issues: [SECURITY.md](SECURITY.md). This project follows the [Contributor Covenant](CODE_OF_CONDUCT.md).
+The [Wave application package](docs/wave/APPLICATION.md) separates what is built from the remaining work in [`scripts/wave-issues.json`](scripts/wave-issues.json): 145 open `Stellar Wave` issues worth 25,000 points (95 high, 20 medium, 30 trivial). Add only substantive unsolved work. Read [CONTRIBUTING.md](CONTRIBUTING.md) for setup, `make` targets and the commit rules. Security issues: [SECURITY.md](SECURITY.md). This project follows the [Contributor Covenant](CODE_OF_CONDUCT.md).
 
 ## Maintainers
 
