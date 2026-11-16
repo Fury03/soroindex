@@ -1,466 +1,3036 @@
-[
-  {
-    "title": "feat(rules): add reviewed SEP-40 oracle consumer rules",
-    "area": "rules",
-    "difficulty": "medium",
-    "summary": "Add a versioned SEP-40 rule file after reading its current protocol text.",
-    "why": "Only SEP-41 has rules today; these interfaces cannot currently be inferred.",
-    "acceptance_criteria": [
-      "Record source commit, review date and ruleset version.",
-      "Distinguish required and optional signatures exactly.",
-      "Validate against the schema and test matching, partial and mismatching fixtures."
-    ],
-    "tech_stack": "Go standard library, SQLite and the existing pinned tooling; additions require maintainer review.",
-    "pointers": [
-      "rules/schema.json",
-      "internal/match/match_test.go",
-      "docs/rule-files.md"
-    ],
-    "existing_issue": 20
+{
+  "points": {
+    "high": 200,
+    "medium": 150,
+    "trivial": 100
   },
-  {
-    "title": "feat(rules): add reviewed SEP-50 non-fungible tokens rules",
-    "area": "rules",
-    "difficulty": "medium",
-    "summary": "Add a versioned SEP-50 rule file after reading its current protocol text.",
-    "why": "Only SEP-41 has rules today; these interfaces cannot currently be inferred.",
-    "acceptance_criteria": [
-      "Record source commit, review date and ruleset version.",
-      "Distinguish required and optional signatures exactly.",
-      "Validate against the schema and test matching, partial and mismatching fixtures."
-    ],
-    "tech_stack": "Go standard library, SQLite and the existing pinned tooling; additions require maintainer review.",
-    "pointers": [
-      "rules/schema.json",
-      "internal/match/match_test.go",
-      "docs/rule-files.md"
-    ],
-    "existing_issue": 21
-  },
-  {
-    "title": "feat(rules): add reviewed SEP-56 tokenized vaults rules",
-    "area": "rules",
-    "difficulty": "medium",
-    "summary": "Add a versioned SEP-56 rule file after reading its current protocol text.",
-    "why": "Only SEP-41 has rules today; these interfaces cannot currently be inferred.",
-    "acceptance_criteria": [
-      "Record source commit, review date and ruleset version.",
-      "Distinguish required and optional signatures exactly.",
-      "Validate against the schema and test matching, partial and mismatching fixtures."
-    ],
-    "tech_stack": "Go standard library, SQLite and the existing pinned tooling; additions require maintainer review.",
-    "pointers": [
-      "rules/schema.json",
-      "internal/match/match_test.go",
-      "docs/rule-files.md"
-    ],
-    "existing_issue": 22
-  },
-  {
-    "title": "test(sepmeta): add Unicode whitespace boundary vectors",
-    "area": "parser",
-    "difficulty": "trivial",
-    "summary": "Extend vectors with NBSP, em-space, zero-width space and mixed ASCII separators in both parser modes.",
-    "why": "Current vectors do not enumerate these visually ambiguous token boundaries.",
-    "acceptance_criteria": [
-      "Record exact bytes and expected anomalies in both modes.",
-      "Prove zero-width characters are not silently interpreted as ASCII digits.",
-      "Run the existing parser suite without changing trust definitions."
-    ],
-    "tech_stack": "Go standard library, SQLite and the existing pinned tooling; additions require maintainer review.",
-    "pointers": [
-      "pkg/sepmeta/sep47_test.go",
-      "pkg/sepmeta/sep47.go"
-    ],
-    "existing_issue": 23
-  },
-  {
-    "title": "test(sepmeta): seed fuzzing with real mainnet custom sections",
-    "area": "parser",
-    "difficulty": "medium",
-    "summary": "Add minimized meta/spec fuzz seeds from public Wasm with source hash and ledger provenance.",
-    "why": "Current corpora are fixture-based; deployed toolchains produce different encodings.",
-    "acceptance_criteria": [
-      "Record origin hashes, dates and extraction method.",
-      "Minimize seeds while preserving the observed encodings.",
-      "Run all four fuzz targets and commit any regression input."
-    ],
-    "tech_stack": "Go standard library, SQLite and the existing pinned tooling; additions require maintainer review.",
-    "pointers": [
-      "pkg/sepmeta/fuzz_test.go",
-      "report/mainnet-raw.csv"
-    ],
-    "existing_issue": 24
-  },
-  {
-    "title": "test(sepmeta): add nested UDT and union spec vectors",
-    "area": "parser",
-    "difficulty": "medium",
-    "summary": "Exercise structs, unions and enum references inside nested function types.",
-    "why": "Existing token fixtures cover common signatures but not a curated matrix of nested UDT encodings.",
-    "acceptance_criteria": [
-      "Include forward references, named variants and truncated payloads.",
-      "Assert bounds and decoded signatures, not just no-panic behavior.",
-      "Keep vectors deterministic and network-free."
-    ],
-    "tech_stack": "Go standard library, SQLite and the existing pinned tooling; additions require maintainer review.",
-    "pointers": [
-      "pkg/sepmeta/spec_test.go",
-      "pkg/sepmeta/spec.go"
-    ],
-    "existing_issue": 39
-  },
-  {
-    "title": "docs(api): publish validated OpenAPI 3.1 specification",
-    "area": "api",
-    "difficulty": "medium",
-    "summary": "Document the implemented API in machine-readable OpenAPI.",
-    "why": "The current reference has real examples but no client-generation schema.",
-    "acceptance_criteria": [
-      "Cover all routes, errors, nullable fields, tier rules and cursors.",
-      "Validate captured handler responses against the document.",
-      "Link the document from the API reference without changing fixed shapes."
-    ],
-    "tech_stack": "Go standard library, SQLite and the existing pinned tooling; additions require maintainer review.",
-    "pointers": [
-      "internal/api",
-      "docs/api.md"
-    ],
-    "existing_issue": 15
-  },
-  {
-    "title": "feat(api): propose declared and inferred disagreement filters",
-    "area": "api",
-    "difficulty": "high",
-    "summary": "Design a query for declarations whose loaded interface matcher does not report match.",
-    "why": "The current tier selector cannot directly find incorrect or partial declarations.",
-    "acceptance_criteria": [
-      "Obtain operator approval for any new public parameters before coding.",
-      "Define partial, mismatch, no_spec and absent-rule behavior separately.",
-      "Add keyset, combined AND/OR and SAC exclusion tests."
-    ],
-    "tech_stack": "Go standard library, SQLite and the existing pinned tooling; additions require maintainer review.",
-    "pointers": [
-      "internal/store/catalog.go",
-      "internal/api/catalog.go",
-      "CLAUDE.md"
-    ],
-    "existing_issue": 40
-  },
-  {
-    "title": "feat(api): propose historical ledger query filters",
-    "area": "api",
-    "difficulty": "high",
-    "summary": "Design an explicit as-of-ledger lookup over contract version ranges.",
-    "why": "Current listing intentionally queries only current live code.",
-    "acceptance_criteria": [
-      "Review public API and archival semantics with the operator first.",
-      "Select half-open version ranges without inventing unknown pre-seed history.",
-      "Test upgrades at exact ledger boundaries and cursor continuation."
-    ],
-    "tech_stack": "Go standard library, SQLite and the existing pinned tooling; additions require maintainer review.",
-    "pointers": [
-      "internal/store/details.go",
-      "migrations/0001_init.sql",
-      "CLAUDE.md"
-    ],
-    "existing_issue": 41
-  },
-  {
-    "title": "test(api): exercise concurrent WAL readers during sync",
-    "area": "api",
-    "difficulty": "medium",
-    "summary": "Add a bounded workload with concurrent API readers and a writer applying real fixture changes.",
-    "why": "Existing handler tests use frozen indexes; the single-query benchmark is not a concurrent writer test.",
-    "acceptance_criteria": [
-      "Assert each multi-query response has a consistent ledger snapshot.",
-      "Measure busy errors and request p95 under a stated workload.",
-      "Run with the race detector and leave no background processes."
-    ],
-    "tech_stack": "Go standard library, SQLite and the existing pinned tooling; additions require maintainer review.",
-    "pointers": [
-      "internal/api/server_test.go",
-      "internal/store/details.go",
-      "internal/ingest/apply_test.go"
-    ],
-    "existing_issue": 42
-  },
-  {
-    "title": "feat(cli): show interface evidence in contract output",
-    "area": "cli",
-    "difficulty": "trivial",
-    "summary": "Give `sep47idx contract` the same plain-text evidence `sep47idx wasm` now prints: the missing and mismatched functions behind each inferred status, and clear wording for the states that are not a match result.",
-    "why": "`wasm` names what to fix (Missing / Mismatched lines). `contract`, which most users run first, still prints only a status. A not-yet-matched Wasm, a Wasm with no spec, and an unresolved CAP-85 reference all need distinct wording so none reads as a mismatch.",
-    "acceptance_criteria": [
-      "Reuse the wasm command's evidence rendering for each claim's inferred status in human `contract` output.",
-      "Print distinct text for no match row, `no_spec`, and an unresolved or archived executable reference.",
-      "Tests cover a partial match, a no_spec Wasm and an unresolved reference without rerunning the matcher."
-    ],
-    "tech_stack": "Go standard library, SQLite and the existing pinned tooling; additions require maintainer review.",
-    "pointers": [
-      "cmd/sep47idx/cmd_contract.go",
-      "cmd/sep47idx/cmd_wasm_detail.go",
-      "internal/store/details.go"
-    ],
-    "existing_issue": 43
-  },
-  {
-    "title": "feat(ingest): implement data-lake BackfillSource",
-    "area": "sync",
-    "difficulty": "high",
-    "summary": "Add a streaming, provenance-aware source from Stellar historical data for gaps older than RPC retention.",
-    "why": "Only SeedFileSource implements the backfill interface today.",
-    "acceptance_criteria": [
-      "Document source schema, date bounds, cost and network.",
-      "Reject nonconsecutive replay and mismatched network provenance.",
-      "Prove recovery across a retention gap with offline recorded input."
-    ],
-    "tech_stack": "Go standard library, SQLite and the existing pinned tooling; additions require maintainer review.",
-    "pointers": [
-      "internal/ingest/seed.go",
-      "internal/ingest/ledgers.go",
-      "scripts/hubble-export.sql"
-    ],
-    "existing_issue": 28
-  },
-  {
-    "title": "feat(rpc): fail over across network-verified providers",
-    "area": "sync",
-    "difficulty": "high",
-    "summary": "Support ordered RPC providers with network validation and bounded retries.",
-    "why": "The RPC client retries one provider and cannot move to another.",
-    "acceptance_criteria": [
-      "Verify every provider passphrase before using data.",
-      "Preserve retention-gap and last-ledger invariants across switches.",
-      "Test unavailable, stale and wrong-network providers with local servers."
-    ],
-    "tech_stack": "Go standard library, SQLite and the existing pinned tooling; additions require maintainer review.",
-    "pointers": [
-      "internal/rpc/client.go",
-      "internal/sync/loop.go"
-    ],
-    "existing_issue": 29
-  },
-  {
-    "title": "feat(store): add a consistent online backup command",
-    "area": "sync",
-    "difficulty": "medium",
-    "summary": "Provide a supported checkpoint/backup path while synchronization runs.",
-    "why": "The guide currently relies on an external sqlite3 backup command or stopping the writer.",
-    "acceptance_criteria": [
-      "Use a documented SQLite backup or snapshot mechanism compatible with the pure-Go driver.",
-      "Validate snapshot network, schema and committed ledger after restore.",
-      "Test concurrent writes, cancellation and disk errors without copying a live .db alone."
-    ],
-    "tech_stack": "Go standard library, SQLite and the existing pinned tooling; additions require maintainer review.",
-    "pointers": [
-      "internal/store/store.go",
-      "docs/self-hosting.md"
-    ],
-    "existing_issue": 44
-  },
-  {
-    "title": "feat(sync): expose throughput and RPC retry metrics",
-    "area": "sync",
-    "difficulty": "medium",
-    "summary": "Add structured progress fields for batch duration, processed facts and retries.",
-    "why": "Current progress reports ledger lag but not the cause of slow synchronization.",
-    "acceptance_criteria": [
-      "Define fields and units before adding them.",
-      "Exclude RPC credentials and contract payloads from telemetry.",
-      "Test zero-work, retries and cancelled batches with deterministic clocks."
-    ],
-    "tech_stack": "Go standard library, SQLite and the existing pinned tooling; additions require maintainer review.",
-    "pointers": [
-      "internal/sync/loop.go",
-      "internal/rpc/client.go",
-      "cmd/sep47idx/cmd_sync.go"
-    ],
-    "existing_issue": 45
-  },
-  {
-    "title": "feat(ingest): stream large seed CSV inputs in bounded batches",
-    "area": "sync",
-    "difficulty": "high",
-    "summary": "Replace whole-file collection with a reviewed iterator interface for large censuses.",
-    "why": "SeedFileSource reads and retains all rows before applying batches.",
-    "acceptance_criteria": [
-      "Review interface changes with existing source consumers.",
-      "Preserve duplicate handling, line errors and idempotent resume.",
-      "Measure peak memory on a reproducible million-row seed."
-    ],
-    "tech_stack": "Go standard library, SQLite and the existing pinned tooling; additions require maintainer review.",
-    "pointers": [
-      "internal/ingest/seed.go",
-      "internal/ingest/seed_test.go"
-    ],
-    "existing_issue": 46
-  },
-  {
-    "title": "docs(phase0): chart declared versus inferred adoption",
-    "area": "docs",
-    "difficulty": "medium",
-    "summary": "Render the committed dated census as accessible charts beside its tables.",
-    "why": "The adoption page currently exposes tables only.",
-    "acceptance_criteria": [
-      "Derive charts from committed report data, never manually typed percentages.",
-      "Keep hash-weighted and contract-weighted measures distinct.",
-      "Provide text equivalents and verify strict docs build."
-    ],
-    "tech_stack": "Go standard library, SQLite and the existing pinned tooling; additions require maintainer review.",
-    "pointers": [
-      "docs/adoption.md",
-      "report/mainnet-summary.json"
-    ],
-    "existing_issue": 30
-  },
-  {
-    "title": "feat(phase0): retain dated adoption snapshots and trends",
-    "area": "docs",
-    "difficulty": "medium",
-    "summary": "Store comparable census snapshots and render change over time.",
-    "why": "The report currently replaces a network summary rather than maintaining a trend series.",
-    "acceptance_criteria": [
-      "Record network, ledger, sampling method and parser/ruleset versions.",
-      "Reject comparisons across incompatible methods or label them explicitly.",
-      "Test deterministic trend generation from recorded snapshots."
-    ],
-    "tech_stack": "Go standard library, SQLite and the existing pinned tooling; additions require maintainer review.",
-    "pointers": [
-      "internal/phase0/report.go",
-      "internal/phase0/markdown.go",
-      "docs/adoption.md"
-    ],
-    "existing_issue": 31
-  },
-  {
-    "title": "docs(api): add a typed Python client example",
-    "area": "docs",
-    "difficulty": "trivial",
-    "summary": "Build a small executable example consuming cursor pages and distinguishing trust evidence.",
-    "why": "The API reference shows curl but no client integration.",
-    "acceptance_criteria": [
-      "Use Python standard-library HTTP and explicit request timeouts.",
-      "Handle 400, 404 and 429 without conflating empty results.",
-      "Run against a local fixture server and include real output."
-    ],
-    "tech_stack": "Go standard library, SQLite and the existing pinned tooling; additions require maintainer review.",
-    "pointers": [
-      "docs/api.md",
-      "internal/api/server_test.go"
-    ],
-    "existing_issue": 47
-  },
-  {
-    "title": "docs(api): add a browser client with pagination and tier labels",
-    "area": "docs",
-    "difficulty": "medium",
-    "summary": "Provide a minimal example UI that reads the JSON API and displays separate evidence tiers.",
-    "why": "GET CORS exists but there is no worked browser integration.",
-    "acceptance_criteria": [
-      "Keep verified caveats and unresolved/archived states visible.",
-      "Follow opaque cursors and handle cancellation/rate limits.",
-      "Document a tested local workflow without presenting it as the hosted production API."
-    ],
-    "tech_stack": "Go standard library, SQLite and the existing pinned tooling; additions require maintainer review.",
-    "pointers": [
-      "docs/api.md",
-      "internal/api/server.go"
-    ],
-    "existing_issue": 48
-  },
-  {
-    "title": "ci(repo): produce release SBOM and signed provenance",
-    "area": "infra",
-    "difficulty": "medium",
-    "summary": "Attach a dependency SBOM and build provenance to the binary and image artifacts.",
-    "why": "Checksums establish integrity but do not describe dependency inventory or build provenance.",
-    "acceptance_criteria": [
-      "Review generator and action pins before adding tools.",
-      "Include exact compiler, source commit and runtime module versions.",
-      "Verify provenance and SBOM against locally built release artifacts."
-    ],
-    "tech_stack": "Go standard library, SQLite and the existing pinned tooling; additions require maintainer review.",
-    "pointers": [
-      "go.mod",
-      "Dockerfile",
-      "docs/dependency-review.md"
-    ],
-    "existing_issue": 49
-  },
-  {
-    "title": "ci(repo): build and smoke-test arm64 container images",
-    "area": "infra",
-    "difficulty": "medium",
-    "summary": "Publish a reviewed multiarchitecture image index rather than only a native development image.",
-    "why": "The static binaries cover arm64; current Docker validation ran only amd64.",
-    "acceptance_criteria": [
-      "Build linux/amd64 and linux/arm64 with pinned bases.",
-      "Smoke-test nonroot read-only index access on both architectures.",
-      "Require operator publication and record the multiarch digest."
-    ],
-    "tech_stack": "Go standard library, SQLite and the existing pinned tooling; additions require maintainer review.",
-    "pointers": [
-      "Dockerfile",
-      "docs/self-hosting.md"
-    ],
-    "existing_issue": 50
-  },
-  {
-    "title": "ci(repo): test the declared Go language floor",
-    "area": "infra",
-    "difficulty": "medium",
-    "summary": "Run the offline suite under Go 1.26 as well as the pinned build compiler.",
-    "why": "The language floor is documented but CI only executes the build pin.",
-    "acceptance_criteria": [
-      "Pin an available patched compiler in the 1.26 family.",
-      "Disable automatic toolchain switching so the check truly uses the floor.",
-      "Run meaningful parser/store/CLI tests and report unsupported dependencies clearly."
-    ],
-    "tech_stack": "Go standard library, SQLite and the existing pinned tooling; additions require maintainer review.",
-    "pointers": [
-      "go.mod",
-      ".github/workflows/ci.yml",
-      "CONTRIBUTING.md"
-    ],
-    "existing_issue": 51
-  },
-  {
-    "title": "ci(repo): propose reviewed dependency patch automation",
-    "area": "infra",
-    "difficulty": "medium",
-    "summary": "Open bounded dependency patch proposals with the existing validation gates.",
-    "why": "Dependency refreshes are manual and security patches can lag the build pin.",
-    "acceptance_criteria": [
-      "Review action permissions and pin third-party actions.",
-      "Keep SDK/minor upgrades separate from patch updates.",
-      "Require tests, rule-source review where relevant and maintainer approval before merging."
-    ],
-    "tech_stack": "Go standard library, SQLite and the existing pinned tooling; additions require maintainer review.",
-    "pointers": [
-      "go.mod",
-      ".github/workflows/security.yml",
-      "CONTRIBUTING.md"
-    ],
-    "existing_issue": 52
-  },
-  {
-    "title": "feat(cli): decide and implement query exit codes for empty results",
-    "area": "cli",
-    "difficulty": "trivial",
-    "existing_issue": 17,
-    "summary": "`sep47idx query` exits 0 when nothing matches. Issue #17 asked for exit code 2; CLAUDE.md §5.12 reserves 2 for \"not found\". Decide whether an empty filter result is \"not found\" and implement it consistently for text, JSON and CSV.",
-    "why": "Scripts that ask \"is anything implementing SEP-41?\" need to tell an empty answer from success without parsing output.",
-    "acceptance_criteria": [
-      "The decision and its reason are recorded in docs/cli.md.",
-      "Text, --json, --csv and --csv --all behave the same way for an empty result.",
-      "Tests cover an empty result in each output mode."
-    ],
-    "tech_stack": "Go standard library `flag`; no new dependency.",
-    "pointers": [
-      "cmd/sep47idx/cmd_query.go",
-      "cmd/sep47idx/cmd_query_test.go",
-      "docs/cli.md"
-    ]
-  }
-]
+  "budget": 25000,
+  "issues": [
+    {
+      "title": "feat(rules): add reviewed SEP-40 oracle consumer rules",
+      "complexity": "high",
+      "area": "rules",
+      "description": "Add a versioned SEP-40 rule file after reading its current protocol text.",
+      "why": "Only SEP-41 has rules today; these interfaces cannot currently be inferred.",
+      "acceptance_criteria": [
+        "Record source commit, review date and ruleset version.",
+        "Distinguish required and optional signatures exactly.",
+        "Validate against the schema and test matching, partial and mismatching fixtures."
+      ],
+      "guidance": [],
+      "pointers": [
+        "rules/schema.json",
+        "internal/match/match_test.go",
+        "docs/rule-files.md"
+      ],
+      "existing_issue": 20
+    },
+    {
+      "title": "feat(rules): add reviewed SEP-50 non-fungible tokens rules",
+      "complexity": "high",
+      "area": "rules",
+      "description": "Add a versioned SEP-50 rule file after reading its current protocol text.",
+      "why": "Only SEP-41 has rules today; these interfaces cannot currently be inferred.",
+      "acceptance_criteria": [
+        "Record source commit, review date and ruleset version.",
+        "Distinguish required and optional signatures exactly.",
+        "Validate against the schema and test matching, partial and mismatching fixtures."
+      ],
+      "guidance": [],
+      "pointers": [
+        "rules/schema.json",
+        "internal/match/match_test.go",
+        "docs/rule-files.md"
+      ],
+      "existing_issue": 21
+    },
+    {
+      "title": "feat(rules): add reviewed SEP-56 tokenized vaults rules",
+      "complexity": "high",
+      "area": "rules",
+      "description": "Add a versioned SEP-56 rule file after reading its current protocol text.",
+      "why": "Only SEP-41 has rules today; these interfaces cannot currently be inferred.",
+      "acceptance_criteria": [
+        "Record source commit, review date and ruleset version.",
+        "Distinguish required and optional signatures exactly.",
+        "Validate against the schema and test matching, partial and mismatching fixtures."
+      ],
+      "guidance": [],
+      "pointers": [
+        "rules/schema.json",
+        "internal/match/match_test.go",
+        "docs/rule-files.md"
+      ],
+      "existing_issue": 22
+    },
+    {
+      "title": "test(sepmeta): add Unicode whitespace boundary vectors",
+      "complexity": "trivial",
+      "area": "parser",
+      "description": "Extend vectors with NBSP, em-space, zero-width space and mixed ASCII separators in both parser modes.",
+      "why": "Current vectors do not enumerate these visually ambiguous token boundaries.",
+      "acceptance_criteria": [
+        "Record exact bytes and expected anomalies in both modes.",
+        "Prove zero-width characters are not silently interpreted as ASCII digits.",
+        "Run the existing parser suite without changing trust definitions."
+      ],
+      "guidance": [],
+      "pointers": [
+        "pkg/sepmeta/sep47_test.go",
+        "pkg/sepmeta/sep47.go"
+      ],
+      "existing_issue": 23
+    },
+    {
+      "title": "test(sepmeta): seed fuzzing with real mainnet custom sections",
+      "complexity": "medium",
+      "area": "parser",
+      "description": "Add minimized meta/spec fuzz seeds from public Wasm with source hash and ledger provenance.",
+      "why": "Current corpora are fixture-based; deployed toolchains produce different encodings.",
+      "acceptance_criteria": [
+        "Record origin hashes, dates and extraction method.",
+        "Minimize seeds while preserving the observed encodings.",
+        "Run all four fuzz targets and commit any regression input."
+      ],
+      "guidance": [],
+      "pointers": [
+        "pkg/sepmeta/fuzz_test.go",
+        "report/mainnet-raw.csv"
+      ],
+      "existing_issue": 24
+    },
+    {
+      "title": "test(sepmeta): add nested UDT and union spec vectors",
+      "complexity": "medium",
+      "area": "parser",
+      "description": "Exercise structs, unions and enum references inside nested function types.",
+      "why": "Existing token fixtures cover common signatures but not a curated matrix of nested UDT encodings.",
+      "acceptance_criteria": [
+        "Include forward references, named variants and truncated payloads.",
+        "Assert bounds and decoded signatures, not just no-panic behavior.",
+        "Keep vectors deterministic and network-free."
+      ],
+      "guidance": [],
+      "pointers": [
+        "pkg/sepmeta/spec_test.go",
+        "pkg/sepmeta/spec.go"
+      ],
+      "existing_issue": 39
+    },
+    {
+      "title": "docs(api): publish validated OpenAPI 3.1 specification",
+      "complexity": "high",
+      "area": "api",
+      "description": "Document the implemented API in machine-readable OpenAPI.",
+      "why": "The current reference has real examples but no client-generation schema.",
+      "acceptance_criteria": [
+        "Cover all routes, errors, nullable fields, tier rules and cursors.",
+        "Validate captured handler responses against the document.",
+        "Link the document from the API reference without changing fixed shapes."
+      ],
+      "guidance": [],
+      "pointers": [
+        "internal/api",
+        "docs/api.md"
+      ],
+      "existing_issue": 15
+    },
+    {
+      "title": "feat(api): propose declared and inferred disagreement filters",
+      "complexity": "high",
+      "area": "api",
+      "description": "Design a query for declarations whose loaded interface matcher does not report match.",
+      "why": "The current tier selector cannot directly find incorrect or partial declarations.",
+      "acceptance_criteria": [
+        "Obtain operator approval for any new public parameters before coding.",
+        "Define partial, mismatch, no_spec and absent-rule behavior separately.",
+        "Add keyset, combined AND/OR and SAC exclusion tests."
+      ],
+      "guidance": [],
+      "pointers": [
+        "internal/store/catalog.go",
+        "internal/api/catalog.go",
+        "CLAUDE.md"
+      ],
+      "existing_issue": 40
+    },
+    {
+      "title": "feat(api): propose historical ledger query filters",
+      "complexity": "high",
+      "area": "api",
+      "description": "Design an explicit as-of-ledger lookup over contract version ranges.",
+      "why": "Current listing intentionally queries only current live code.",
+      "acceptance_criteria": [
+        "Review public API and archival semantics with the operator first.",
+        "Select half-open version ranges without inventing unknown pre-seed history.",
+        "Test upgrades at exact ledger boundaries and cursor continuation."
+      ],
+      "guidance": [],
+      "pointers": [
+        "internal/store/details.go",
+        "migrations/0001_init.sql",
+        "CLAUDE.md"
+      ],
+      "existing_issue": 41
+    },
+    {
+      "title": "test(api): exercise concurrent WAL readers during sync",
+      "complexity": "medium",
+      "area": "api",
+      "description": "Add a bounded workload with concurrent API readers and a writer applying real fixture changes.",
+      "why": "Existing handler tests use frozen indexes; the single-query benchmark is not a concurrent writer test.",
+      "acceptance_criteria": [
+        "Assert each multi-query response has a consistent ledger snapshot.",
+        "Measure busy errors and request p95 under a stated workload.",
+        "Run with the race detector and leave no background processes."
+      ],
+      "guidance": [],
+      "pointers": [
+        "internal/api/server_test.go",
+        "internal/store/details.go",
+        "internal/ingest/apply_test.go"
+      ],
+      "existing_issue": 42
+    },
+    {
+      "title": "feat(cli): show interface evidence in contract output",
+      "complexity": "trivial",
+      "area": "cli",
+      "description": "Give `sep47idx contract` the same plain-text evidence `sep47idx wasm` now prints: the missing and mismatched functions behind each inferred status, and clear wording for the states that are not a match result.",
+      "why": "`wasm` names what to fix (Missing / Mismatched lines). `contract`, which most users run first, still prints only a status. A not-yet-matched Wasm, a Wasm with no spec, and an unresolved CAP-85 reference all need distinct wording so none reads as a mismatch.",
+      "acceptance_criteria": [
+        "Reuse the wasm command's evidence rendering for each claim's inferred status in human `contract` output.",
+        "Print distinct text for no match row, `no_spec`, and an unresolved or archived executable reference.",
+        "Tests cover a partial match, a no_spec Wasm and an unresolved reference without rerunning the matcher."
+      ],
+      "guidance": [],
+      "pointers": [
+        "cmd/sep47idx/cmd_contract.go",
+        "cmd/sep47idx/cmd_wasm_detail.go",
+        "internal/store/details.go"
+      ],
+      "existing_issue": 43
+    },
+    {
+      "title": "feat(ingest): implement data-lake BackfillSource",
+      "complexity": "high",
+      "area": "sync",
+      "description": "Add a streaming, provenance-aware source from Stellar historical data for gaps older than RPC retention.",
+      "why": "Only SeedFileSource implements the backfill interface today.",
+      "acceptance_criteria": [
+        "Document source schema, date bounds, cost and network.",
+        "Reject nonconsecutive replay and mismatched network provenance.",
+        "Prove recovery across a retention gap with offline recorded input."
+      ],
+      "guidance": [],
+      "pointers": [
+        "internal/ingest/seed.go",
+        "internal/ingest/ledgers.go",
+        "scripts/hubble-export.sql"
+      ],
+      "existing_issue": 28
+    },
+    {
+      "title": "feat(rpc): fail over across network-verified providers",
+      "complexity": "high",
+      "area": "sync",
+      "description": "Support ordered RPC providers with network validation and bounded retries.",
+      "why": "The RPC client retries one provider and cannot move to another.",
+      "acceptance_criteria": [
+        "Verify every provider passphrase before using data.",
+        "Preserve retention-gap and last-ledger invariants across switches.",
+        "Test unavailable, stale and wrong-network providers with local servers."
+      ],
+      "guidance": [],
+      "pointers": [
+        "internal/rpc/client.go",
+        "internal/sync/loop.go"
+      ],
+      "existing_issue": 29
+    },
+    {
+      "title": "feat(store): add a consistent online backup command",
+      "complexity": "medium",
+      "area": "sync",
+      "description": "Provide a supported checkpoint/backup path while synchronization runs.",
+      "why": "The guide currently relies on an external sqlite3 backup command or stopping the writer.",
+      "acceptance_criteria": [
+        "Use a documented SQLite backup or snapshot mechanism compatible with the pure-Go driver.",
+        "Validate snapshot network, schema and committed ledger after restore.",
+        "Test concurrent writes, cancellation and disk errors without copying a live .db alone."
+      ],
+      "guidance": [],
+      "pointers": [
+        "internal/store/store.go",
+        "docs/self-hosting.md"
+      ],
+      "existing_issue": 44
+    },
+    {
+      "title": "feat(sync): expose throughput and RPC retry metrics",
+      "complexity": "medium",
+      "area": "sync",
+      "description": "Add structured progress fields for batch duration, processed facts and retries.",
+      "why": "Current progress reports ledger lag but not the cause of slow synchronization.",
+      "acceptance_criteria": [
+        "Define fields and units before adding them.",
+        "Exclude RPC credentials and contract payloads from telemetry.",
+        "Test zero-work, retries and cancelled batches with deterministic clocks."
+      ],
+      "guidance": [],
+      "pointers": [
+        "internal/sync/loop.go",
+        "internal/rpc/client.go",
+        "cmd/sep47idx/cmd_sync.go"
+      ],
+      "existing_issue": 45
+    },
+    {
+      "title": "feat(ingest): stream large seed CSV inputs in bounded batches",
+      "complexity": "high",
+      "area": "sync",
+      "description": "Replace whole-file collection with a reviewed iterator interface for large censuses.",
+      "why": "SeedFileSource reads and retains all rows before applying batches.",
+      "acceptance_criteria": [
+        "Review interface changes with existing source consumers.",
+        "Preserve duplicate handling, line errors and idempotent resume.",
+        "Measure peak memory on a reproducible million-row seed."
+      ],
+      "guidance": [],
+      "pointers": [
+        "internal/ingest/seed.go",
+        "internal/ingest/seed_test.go"
+      ],
+      "existing_issue": 46
+    },
+    {
+      "title": "docs(phase0): chart declared versus inferred adoption",
+      "complexity": "medium",
+      "area": "docs",
+      "description": "Render the committed dated census as accessible charts beside its tables.",
+      "why": "The adoption page currently exposes tables only.",
+      "acceptance_criteria": [
+        "Derive charts from committed report data, never manually typed percentages.",
+        "Keep hash-weighted and contract-weighted measures distinct.",
+        "Provide text equivalents and verify strict docs build."
+      ],
+      "guidance": [],
+      "pointers": [
+        "docs/adoption.md",
+        "report/mainnet-summary.json"
+      ],
+      "existing_issue": 30
+    },
+    {
+      "title": "feat(phase0): retain dated adoption snapshots and trends",
+      "complexity": "medium",
+      "area": "docs",
+      "description": "Store comparable census snapshots and render change over time.",
+      "why": "The report currently replaces a network summary rather than maintaining a trend series.",
+      "acceptance_criteria": [
+        "Record network, ledger, sampling method and parser/ruleset versions.",
+        "Reject comparisons across incompatible methods or label them explicitly.",
+        "Test deterministic trend generation from recorded snapshots."
+      ],
+      "guidance": [],
+      "pointers": [
+        "internal/phase0/report.go",
+        "internal/phase0/markdown.go",
+        "docs/adoption.md"
+      ],
+      "existing_issue": 31
+    },
+    {
+      "title": "docs(api): add a typed Python client example",
+      "complexity": "trivial",
+      "area": "docs",
+      "description": "Build a small executable example consuming cursor pages and distinguishing trust evidence.",
+      "why": "The API reference shows curl but no client integration.",
+      "acceptance_criteria": [
+        "Use Python standard-library HTTP and explicit request timeouts.",
+        "Handle 400, 404 and 429 without conflating empty results.",
+        "Run against a local fixture server and include real output."
+      ],
+      "guidance": [],
+      "pointers": [
+        "docs/api.md",
+        "internal/api/server_test.go"
+      ],
+      "existing_issue": 47
+    },
+    {
+      "title": "docs(api): add a browser client with pagination and tier labels",
+      "complexity": "medium",
+      "area": "docs",
+      "description": "Provide a minimal example UI that reads the JSON API and displays separate evidence tiers.",
+      "why": "GET CORS exists but there is no worked browser integration.",
+      "acceptance_criteria": [
+        "Keep verified caveats and unresolved/archived states visible.",
+        "Follow opaque cursors and handle cancellation/rate limits.",
+        "Document a tested local workflow without presenting it as the hosted production API."
+      ],
+      "guidance": [],
+      "pointers": [
+        "docs/api.md",
+        "internal/api/server.go"
+      ],
+      "existing_issue": 48
+    },
+    {
+      "title": "ci(repo): produce release SBOM and signed provenance",
+      "complexity": "medium",
+      "area": "tooling",
+      "description": "Attach a dependency SBOM and build provenance to the binary and image artifacts.",
+      "why": "Checksums establish integrity but do not describe dependency inventory or build provenance.",
+      "acceptance_criteria": [
+        "Review generator and action pins before adding tools.",
+        "Include exact compiler, source commit and runtime module versions.",
+        "Verify provenance and SBOM against locally built release artifacts."
+      ],
+      "guidance": [],
+      "pointers": [
+        "go.mod",
+        "Dockerfile",
+        "docs/dependency-review.md"
+      ],
+      "existing_issue": 49
+    },
+    {
+      "title": "ci(repo): build and smoke-test arm64 container images",
+      "complexity": "medium",
+      "area": "tooling",
+      "description": "Publish a reviewed multiarchitecture image index rather than only a native development image.",
+      "why": "The static binaries cover arm64; current Docker validation ran only amd64.",
+      "acceptance_criteria": [
+        "Build linux/amd64 and linux/arm64 with pinned bases.",
+        "Smoke-test nonroot read-only index access on both architectures.",
+        "Require operator publication and record the multiarch digest."
+      ],
+      "guidance": [],
+      "pointers": [
+        "Dockerfile",
+        "docs/self-hosting.md"
+      ],
+      "existing_issue": 50
+    },
+    {
+      "title": "ci(repo): test the declared Go language floor",
+      "complexity": "medium",
+      "area": "tooling",
+      "description": "Run the offline suite under Go 1.26 as well as the pinned build compiler.",
+      "why": "The language floor is documented but CI only executes the build pin.",
+      "acceptance_criteria": [
+        "Pin an available patched compiler in the 1.26 family.",
+        "Disable automatic toolchain switching so the check truly uses the floor.",
+        "Run meaningful parser/store/CLI tests and report unsupported dependencies clearly."
+      ],
+      "guidance": [],
+      "pointers": [
+        "go.mod",
+        ".github/workflows/ci.yml",
+        "CONTRIBUTING.md"
+      ],
+      "existing_issue": 51
+    },
+    {
+      "title": "ci(repo): propose reviewed dependency patch automation",
+      "complexity": "medium",
+      "area": "tooling",
+      "description": "Open bounded dependency patch proposals with the existing validation gates.",
+      "why": "Dependency refreshes are manual and security patches can lag the build pin.",
+      "acceptance_criteria": [
+        "Review action permissions and pin third-party actions.",
+        "Keep SDK/minor upgrades separate from patch updates.",
+        "Require tests, rule-source review where relevant and maintainer approval before merging."
+      ],
+      "guidance": [],
+      "pointers": [
+        "go.mod",
+        ".github/workflows/security.yml",
+        "CONTRIBUTING.md"
+      ],
+      "existing_issue": 52
+    },
+    {
+      "title": "feat(cli): decide and implement query exit codes for empty results",
+      "complexity": "trivial",
+      "area": "cli",
+      "description": "`sep47idx query` exits 0 when nothing matches. Issue #17 asked for exit code 2; CLAUDE.md §5.12 reserves 2 for \"not found\". Decide whether an empty filter result is \"not found\" and implement it consistently for text, JSON and CSV.",
+      "why": "Scripts that ask \"is anything implementing SEP-41?\" need to tell an empty answer from success without parsing output.",
+      "acceptance_criteria": [
+        "The decision and its reason are recorded in docs/cli.md.",
+        "Text, --json, --csv and --csv --all behave the same way for an empty result.",
+        "Tests cover an empty result in each output mode."
+      ],
+      "guidance": [],
+      "pointers": [
+        "cmd/sep47idx/cmd_query.go",
+        "cmd/sep47idx/cmd_query_test.go",
+        "docs/cli.md"
+      ],
+      "existing_issue": 17
+    },
+    {
+      "title": "feat(sepmeta): decode contract event specs and expose Events()",
+      "complexity": "high",
+      "area": "parser",
+      "description": "`pkg/sepmeta` turns `contractspecv0` function entries into `FnSig` values, but event entries (`SC_SPEC_ENTRY_EVENT_V0`) are decoded and then ignored. Add an `Events(spec)` function that returns each event's name, prefix topics, parameters (name, type, location: topic or data) and data format, using the same canonical type names as `Functions`.",
+      "why": "SEP-41 defines `mint` and `clawback` as events, not functions. Without event specs the inferred tier can only ever check half of the token interface.",
+      "acceptance_criteria": [
+        "`Events` returns every event entry in spec order, with types rendered exactly like `Functions` (`Address`, `Option<T>`, `udt:Name`, ...).",
+        "The token fixtures' events (`transfer`, `approve`, `burn`, `mint`, `clawback`, where present) are asserted in table tests.",
+        "Malformed or truncated event entries become errors, never panics; `FuzzDecodeSpec` covers the new code path.",
+        "`doc.go` and `docs/how-it-works.md` describe what is and is not read from event specs."
+      ],
+      "guidance": [
+        "Start from `TypeName` in `pkg/sepmeta/spec.go`; reuse it rather than writing a second renderer.",
+        "go-stellar-sdk v0.8.0 changed `ScSpecEventV0.Name` to a `string` (see its CHANGELOG); handle the new type."
+      ],
+      "pointers": [
+        "pkg/sepmeta/spec.go",
+        "pkg/sepmeta/spec_test.go",
+        "pkg/sepmeta/fuzz_test.go"
+      ],
+      "existing_issue": 59
+    },
+    {
+      "title": "feat(sepmeta): resolve user-defined types into a type table",
+      "complexity": "high",
+      "area": "parser",
+      "description": "Functions that take structs, unions, enums or error enums render today as `udt:Name` with no structure. Build a `Types(spec)` table that decodes every UDT entry (fields, cases, values) and lets callers resolve a `udt:` reference to its definition, including nested and forward references.",
+      "why": "Rule files for SEP-40 (`Asset`, `PriceData`) and SEP-56 need to compare type structure, not only names. The type table is the foundation for that.",
+      "acceptance_criteria": [
+        "Struct fields, union cases (void and tuple), enum and error-enum values are decoded with their types.",
+        "References to undefined types and reference cycles are reported as errors with the type name, never followed forever.",
+        "Table tests cover each UDT kind using the existing fixtures plus a new hand-built spec stream.",
+        "Every length read from the spec is bounded by `Limits` before allocation."
+      ],
+      "guidance": [
+        "UDT names were widened to 1024 bytes in go-stellar-sdk v0.8.0; respect `Limits` for them.",
+        "Keep the API read-only and allocation-bounded like the rest of the package."
+      ],
+      "pointers": [
+        "pkg/sepmeta/spec.go",
+        "pkg/sepmeta/wasm.go",
+        "pkg/sepmeta/spec_test.go"
+      ],
+      "existing_issue": 60
+    },
+    {
+      "title": "feat(sepmeta): decode contractenvmetav0 and record each Wasm's interface version",
+      "complexity": "high",
+      "area": "parser",
+      "description": "Soroban Wasm carries a `contractenvmetav0` custom section with the environment interface version the contract was built against. Decode it in `pkg/sepmeta`, store it with each analysed Wasm, and expose it in `sep47idx wasm` and `/v1/wasm/{hash}`.",
+      "why": "The interface version shows which protocol a contract targets. It lets the adoption report say whether declarations correlate with newer toolchains, and flags code built for an older protocol.",
+      "acceptance_criteria": [
+        "`ReadCustomSections` callers can request the section; a decoder returns the protocol and pre-release fields with bounds checks.",
+        "A migration adds a nullable column (operator approval for the schema change is recorded in the PR before coding).",
+        "Fixtures assert the decoded value; Wasm without the section stores NULL, not 0.",
+        "API and CLI output include the field without changing existing response fields."
+      ],
+      "guidance": [
+        "CLAUDE.md requires operator approval for schema changes after the first migration; open the design in the issue first.",
+        "Mirror how `has_meta`/`has_spec` are written in `internal/ingest/analyze.go`."
+      ],
+      "pointers": [
+        "pkg/sepmeta/wasm.go",
+        "internal/ingest/analyze.go",
+        "migrations/0001_init.sql",
+        "internal/store/wasm.go"
+      ],
+      "existing_issue": 61
+    },
+    {
+      "title": "feat(sepmeta): read custom sections from an io.ReaderAt with bounded memory",
+      "complexity": "high",
+      "area": "parser",
+      "description": "`ReadCustomSections` takes the whole module as a `[]byte`. Add a variant that walks sections from an `io.ReaderAt` (with a known size), reading only section headers and the requested custom sections, so large modules never need to be fully resident.",
+      "why": "The indexer receives code from RPC as a single blob today, but offline inspection of local Wasm files and future data-lake backfills read from files. Peak memory should scale with the requested sections, not the module.",
+      "acceptance_criteria": [
+        "The new function returns byte-identical results to `ReadCustomSections` on every fixture and on every fuzz corpus entry (differential test).",
+        "All existing limits apply, including the section-count cap, and a short read is `ErrTruncated`.",
+        "A benchmark shows peak allocation on a 1 MiB module stays within a stated bound.",
+        "`FuzzReadCustomSections` exercises both implementations against each other."
+      ],
+      "guidance": [
+        "Keep the byte-slice API as the reference implementation and test the new one against it."
+      ],
+      "pointers": [
+        "pkg/sepmeta/wasm.go",
+        "pkg/sepmeta/wasm_test.go",
+        "pkg/sepmeta/fuzz_test.go"
+      ],
+      "existing_issue": 62
+    },
+    {
+      "title": "test(sepmeta): cross-implementation conformance suite against stellar-cli and py-stellar-sdk",
+      "complexity": "high",
+      "area": "parser",
+      "description": "Build a recorded conformance suite: for every golden fixture, store the meta and interface output of `stellar contract info` and of the Python stellar-sdk `ContractMeta.supported_seps()`, then assert `pkg/sepmeta` agrees with both (or documents each intentional difference).",
+      "why": "SEP-47 parsing has three widely used implementations. Recording where they agree, and where soroindex deliberately differs (lenient anomalies), turns parser behaviour into checked evidence.",
+      "acceptance_criteria": [
+        "A script regenerates the recorded outputs with pinned tool versions, recorded in `testdata/contracts/README.md`.",
+        "A Go test compares sepmeta's SEP list and anomalies for every fixture and vector with the recorded outputs.",
+        "Every difference is listed in a table in `docs/how-it-works.md` with the reason.",
+        "Normal `go test` never needs Python or stellar-cli installed."
+      ],
+      "guidance": [
+        "Commit the recorded outputs as JSON under `testdata/`, like the existing vectors.",
+        "Pin `stellar-cli` and `stellar-sdk` exactly; the e2e note in this repo's history shows why."
+      ],
+      "pointers": [
+        "pkg/sepmeta/sep47_test.go",
+        "testdata/contracts/README.md",
+        "docs/how-it-works.md"
+      ],
+      "existing_issue": 63
+    },
+    {
+      "title": "test(sepmeta): structure-aware fuzzing for SCMetaEntry and ScSpecEntry streams",
+      "complexity": "high",
+      "area": "parser",
+      "description": "The fuzz targets mutate raw bytes, so most inputs fail XDR decoding in the first few bytes. Add generators that build valid `SCMetaEntry` and `ScSpecEntry` streams from fuzzer-provided choices (counts, nesting depth, string lengths), then feed the encoded bytes to the decoders.",
+      "why": "Byte-level mutation rarely reaches deep decoder paths such as nested `Map<K, Vec<Option<udt>>>`. Structure-aware inputs reach them in seconds.",
+      "acceptance_criteria": [
+        "New fuzz targets build valid streams and assert decode, re-encode and `Functions` round-trip invariants.",
+        "Depth and size are bounded by `Limits`; inputs past a limit must produce `ErrLimit`, never a panic or OOM.",
+        "Each target ran for at least 10 minutes locally; the summary is pasted in the PR.",
+        "Any crash found is committed under `testdata/fuzz/` with its fix."
+      ],
+      "guidance": [
+        "`go test -fuzz` only accepts primitive arguments; derive structure from a `[]byte` seed with a small deterministic decoder."
+      ],
+      "pointers": [
+        "pkg/sepmeta/fuzz_test.go",
+        "pkg/sepmeta/meta.go",
+        "pkg/sepmeta/spec.go"
+      ],
+      "existing_issue": 64
+    },
+    {
+      "title": "perf(sepmeta): benchmark suite with allocation budgets enforced in CI",
+      "complexity": "high",
+      "area": "parser",
+      "description": "Add benchmarks for `ReadCustomSections`, `DecodeMeta`, `DecodeSpec`, `ParseSEP47` and `Functions` over the golden fixtures, and a CI check that fails when allocations per operation exceed a committed budget.",
+      "why": "The parser runs on every Wasm the network deploys. Regressions in allocations would show up as slower seeding long before anyone noticed in review.",
+      "acceptance_criteria": [
+        "Benchmarks report ns/op, B/op and allocs/op for each function and fixture.",
+        "Budgets live in a committed file; CI compares `-benchmem` results and fails with a clear message when exceeded.",
+        "Numbers measured on the CI runner, with date and Go version, are recorded in `docs/`.",
+        "The check runs in under two minutes and is not a required check until the budgets are stable."
+      ],
+      "guidance": [
+        "Use `testing.B.ReportAllocs`; avoid timing assertions, which are noisy on shared runners."
+      ],
+      "pointers": [
+        "pkg/sepmeta/wasm.go",
+        "pkg/sepmeta/fixtures_test.go",
+        ".github/workflows/ci.yml"
+      ],
+      "existing_issue": 65
+    },
+    {
+      "title": "test(fixtures): add a SEP-40 oracle consumer fixture contract",
+      "complexity": "high",
+      "area": "parser",
+      "description": "Add a Rust fixture under `testdata/contracts/` that implements the SEP-40 oracle interface exactly as the current SEP text defines it (including its user-defined types), declares `contractmeta!(key=\"sep\", val=\"40\")`, and is built by `scripts/build-fixtures.sh` into a committed golden `.wasm`.",
+      "why": "The SEP-40 rule file (Soroban-CII/soroindex#20) needs a known-good contract to prove a match, and the parser has no fixture with oracle-style UDTs.",
+      "acceptance_criteria": [
+        "The contract's functions and types are copied from the SEP-40 text at a cited commit.",
+        "`scripts/build-fixtures.sh` builds it reproducibly with the pinned toolchain; the Wasm is committed.",
+        "sepmeta tests assert its declared SEPs and its `Functions` output.",
+        "`testdata/contracts/README.md` records the exact versions used."
+      ],
+      "guidance": [
+        "Follow the structure of `testdata/contracts/token_full_sep/`."
+      ],
+      "pointers": [
+        "testdata/contracts/token_full_sep/src/lib.rs",
+        "scripts/build-fixtures.sh",
+        "testdata/contracts/README.md"
+      ],
+      "existing_issue": 66
+    },
+    {
+      "title": "test(fixtures): add a SEP-50 non-fungible token fixture contract",
+      "complexity": "high",
+      "area": "parser",
+      "description": "Add a Rust fixture implementing the SEP-50 non-fungible token interface from the current SEP text, declaring `sep=50`, built into a committed golden Wasm.",
+      "why": "The SEP-50 rule file (Soroban-CII/soroindex#21) needs a matching fixture, and NFTs are the next most common interface question after tokens.",
+      "acceptance_criteria": [
+        "Functions and types follow the SEP-50 text at a cited commit, including any optional functions marked as such.",
+        "Built by `scripts/build-fixtures.sh` with the pinned toolchain; the Wasm is committed.",
+        "sepmeta tests assert declared SEPs and `Functions` output.",
+        "A second variant omits one required function, for partial-match tests."
+      ],
+      "guidance": [
+        "Reuse `testdata/contracts/common/` helpers where they fit."
+      ],
+      "pointers": [
+        "testdata/contracts/Cargo.toml",
+        "scripts/build-fixtures.sh",
+        "testdata/contracts/README.md"
+      ],
+      "existing_issue": 67
+    },
+    {
+      "title": "test(fixtures): add a SEP-56 tokenized vault fixture contract",
+      "complexity": "high",
+      "area": "parser",
+      "description": "Add a Rust fixture implementing the SEP-56 tokenized vault interface from the current SEP text, declaring `sep=56` (and `41` if the vault share token is SEP-41), built into a committed golden Wasm.",
+      "why": "The SEP-56 rule file (Soroban-CII/soroindex#22) needs a matching fixture, and vaults are the first interface that composes with SEP-41.",
+      "acceptance_criteria": [
+        "All vault functions (deposit, mint, withdraw, redeem and their preview/max pairs, per the SEP text) are implemented with the specified types.",
+        "Built reproducibly; the Wasm is committed.",
+        "sepmeta tests assert declared SEPs and `Functions` output.",
+        "The README records how the share-token functions relate to SEP-41."
+      ],
+      "guidance": [
+        "Cite the SEP-56 commit you read in the fixture's source comment."
+      ],
+      "pointers": [
+        "testdata/contracts/Cargo.toml",
+        "scripts/build-fixtures.sh",
+        "testdata/contracts/README.md"
+      ],
+      "existing_issue": 68
+    },
+    {
+      "title": "test(fixtures): add negative token fixtures for matcher edge cases",
+      "complexity": "high",
+      "area": "parser",
+      "description": "Add fixture contracts that look like tokens but are not quite: wrong output type on `balance`, `transfer` with swapped argument order, a duplicated function name across modules, and renamed parameters with correct types.",
+      "why": "The matcher compares types and order, never names. Today only `token_partial` and `not_token` exercise failure paths, so several documented rules have no real-Wasm evidence.",
+      "acceptance_criteria": [
+        "Each fixture is built by the fixtures script and committed.",
+        "Matcher tests assert the exact status, `missing` and `mismatched` evidence for each.",
+        "Renamed parameters with correct types still produce `match`, proving names are ignored.",
+        "The fixture table in `testdata/contracts/README.md` lists each fixture's purpose."
+      ],
+      "guidance": [
+        "Keep each fixture minimal: only the functions needed to show the case."
+      ],
+      "pointers": [
+        "internal/match/match_test.go",
+        "scripts/build-fixtures.sh",
+        "testdata/contracts/README.md"
+      ],
+      "existing_issue": 69
+    },
+    {
+      "title": "ci(fixtures): verify golden Wasm reproduce from their Rust sources",
+      "complexity": "high",
+      "area": "tooling",
+      "description": "Add an optional CI workflow that installs the pinned Rust toolchain and stellar-cli, rebuilds every fixture with `scripts/build-fixtures.sh`, and fails if any rebuilt `.wasm` differs from the committed file.",
+      "why": "Normal builds never need Rust because the Wasm is committed. Without a reproduction check, a committed fixture can drift from its source and nobody would notice.",
+      "acceptance_criteria": [
+        "The workflow runs on changes under `testdata/contracts/` and on manual dispatch, not on every PR.",
+        "Tool versions come from `testdata/contracts/rust-toolchain.toml` and the README, never `latest`.",
+        "A mismatch prints the fixture name and both SHA-256 hashes.",
+        "Actions are pinned to commit SHAs like `ci.yml`."
+      ],
+      "guidance": [
+        "`truncated.wasm` is derived by script from `token_full_sep.wasm`; regenerate it the same way."
+      ],
+      "pointers": [
+        "scripts/build-fixtures.sh",
+        "testdata/contracts/rust-toolchain.toml",
+        ".github/workflows/ci.yml"
+      ],
+      "existing_issue": 70
+    },
+    {
+      "title": "feat(rules): match event specs in rule files, starting with SEP-41",
+      "complexity": "high",
+      "area": "rules",
+      "description": "Extend `rules/schema.json` with an optional `events` section (name, topics, data types), teach the matcher to compare them against decoded event specs, and add SEP-41's events to `rules/sep-0041.json` from the current SEP text.",
+      "why": "SEP-41 specifies events (transfer, approve, burn, mint, clawback) as part of the interface. Checking only functions overstates conformance for contracts that emit nothing.",
+      "acceptance_criteria": [
+        "The schema, matcher and rule file change together; `make rules-check` validates every rule file.",
+        "Event results are reported separately from function results, so existing `status` semantics do not silently change.",
+        "Golden fixtures prove a match, a missing event and a mismatched event.",
+        "A new `ruleset_version` triggers `sync --recompute`; the PR includes its output on a fixture index."
+      ],
+      "guidance": [
+        "Depends on event decoding in `pkg/sepmeta` (see the `Events()` issue).",
+        "Changing what `match` means is a trust-tier question; get operator agreement on the reporting design first."
+      ],
+      "pointers": [
+        "rules/schema.json",
+        "rules/sep-0041.json",
+        "internal/match/match.go",
+        "internal/match/rules.go"
+      ],
+      "existing_issue": 71
+    },
+    {
+      "title": "feat(match): structural matching for user-defined types",
+      "complexity": "high",
+      "area": "rules",
+      "description": "Let rule files describe a UDT by structure (struct fields with types, union cases) instead of only by name, and make the matcher resolve `udt:Name` through the spec's type table before comparing.",
+      "why": "Two contracts can define the same `PriceData` struct under different names, or different structs under the same name. Name-only comparison gives wrong answers both ways for SEP-40 and SEP-56.",
+      "acceptance_criteria": [
+        "Rule files can declare a type once and reference it from several functions.",
+        "Matching compares field order and types, never field names, consistent with how function parameters are matched.",
+        "Tests cover same-structure/different-name (match) and same-name/different-structure (mismatch).",
+        "Evidence in `mismatched` shows the expected and found structure."
+      ],
+      "guidance": [
+        "Depends on the UDT type-table issue in `pkg/sepmeta`."
+      ],
+      "pointers": [
+        "internal/match/match.go",
+        "rules/schema.json",
+        "docs/rule-files.md"
+      ],
+      "existing_issue": 72
+    },
+    {
+      "title": "feat(match): composite rules — a SEP-56 vault requires a SEP-41 share interface",
+      "complexity": "high",
+      "area": "rules",
+      "description": "Add a `requires` field to rule files so one SEP's match can depend on another's (SEP-56 vault shares are SEP-41 tokens). The matcher evaluates dependencies and reports a composite result with both parts' evidence.",
+      "why": "Reporting a vault as `match` when its share token interface is broken would overstate trust, which CLAUDE.md's tie-break rule forbids.",
+      "acceptance_criteria": [
+        "`requires` is validated by the schema and cycles are rejected at load time.",
+        "A composite result is `match` only when the SEP and every required SEP match; evidence names which part failed.",
+        "API and CLI output show the dependency without changing the existing response shape for SEPs without `requires`.",
+        "Tests use the SEP-56 and token fixtures."
+      ],
+      "guidance": [
+        "Coordinate with the SEP-56 rule file issue (Soroban-CII/soroindex#22)."
+      ],
+      "pointers": [
+        "internal/match/rules.go",
+        "internal/match/match.go",
+        "rules/schema.json"
+      ],
+      "existing_issue": 73
+    },
+    {
+      "title": "test(match): property and fuzz tests for the matcher",
+      "complexity": "high",
+      "area": "rules",
+      "description": "Add a fuzz target and property tests for `Match`: results must be deterministic, independent of the order functions appear in the spec, monotonic (adding an unrelated function never lowers a status), and never panic on any `FnSig` input.",
+      "why": "The matcher decides the inferred tier for every Wasm. Its invariants are documented but only tested with hand-picked examples.",
+      "acceptance_criteria": [
+        "`FuzzMatch` runs against the shipped rule files with arbitrary function lists.",
+        "Property tests assert order independence and monotonicity over generated inputs.",
+        "`partial_threshold` boundaries (exactly half) are covered.",
+        "Ran 10 minutes locally with the summary in the PR; any crash is committed with its fix."
+      ],
+      "guidance": [
+        "Generate `FnSig` values from the type names `TypeName` can produce."
+      ],
+      "pointers": [
+        "internal/match/match.go",
+        "internal/match/match_test.go",
+        "pkg/sepmeta/spec.go"
+      ],
+      "existing_issue": 74
+    },
+    {
+      "title": "feat(rules): draft a rule file from a SEP's Rust trait definition",
+      "complexity": "high",
+      "area": "rules",
+      "description": "Write a small tool (`go run ./scripts/rulegen`) that reads the Rust trait block from a SEP markdown file and emits a draft rule file with functions, input types and outputs, for a human to review.",
+      "why": "Rule files are written by hand from SEP text today. A generator removes transcription errors and makes reviewing a new SEP a diff instead of a rewrite.",
+      "acceptance_criteria": [
+        "The tool handles the trait syntax used by SEP-41, SEP-40, SEP-50 and SEP-56, and reports anything it cannot parse instead of guessing.",
+        "Running it on SEP-41's text reproduces `rules/sep-0041.json`'s functions exactly (a golden test with the markdown committed under `testdata/`).",
+        "Output always needs human review: it sets `ruleset_version` to a placeholder that `make rules-check` rejects.",
+        "Documented in `docs/rule-files.md`."
+      ],
+      "guidance": [
+        "Map Rust types (`Address`, `MuxedAddress`, `i128`, `u32`, `String`) to the canonical names in `pkg/sepmeta/spec.go`."
+      ],
+      "pointers": [
+        "rules/sep-0041.json",
+        "rules/schema.json",
+        "docs/rule-files.md"
+      ],
+      "existing_issue": 75
+    },
+    {
+      "title": "feat(store): record each rule file's SHA-256 with every interface match",
+      "complexity": "high",
+      "area": "store",
+      "description": "Store the SHA-256 of the exact rule file used for each `interface_matches` row and expose it next to `ruleset_version` in the API and CLI.",
+      "why": "`ruleset_version` is a human label. A hash proves which bytes produced a verdict, so a changed file with an unchanged label cannot go unnoticed.",
+      "acceptance_criteria": [
+        "A migration adds the column; the schema change has operator approval recorded before coding.",
+        "`--recompute` treats a hash change as stale even if the version label is unchanged.",
+        "Rows written before the migration show the hash as unknown, never as a guessed value.",
+        "Tests cover recompute on hash change and the API field."
+      ],
+      "guidance": [
+        "CLAUDE.md fixes the schema after the first migration without operator approval; propose first."
+      ],
+      "pointers": [
+        "internal/store/recompute.go",
+        "internal/ingest/recompute.go",
+        "migrations/0001_init.sql"
+      ],
+      "existing_issue": 76
+    },
+    {
+      "title": "feat(match): report extra functions and interface coverage per Wasm",
+      "complexity": "high",
+      "area": "rules",
+      "description": "Extend `MatchResult` with the functions present in the spec but not in the rule file, and a coverage summary (required OK, optional OK, extra), and show it in `sep47idx wasm` and `/v1/wasm/{hash}`.",
+      "why": "Contract authors and integrators want to know whether a token is a plain SEP-41 token or a token plus admin functions. Today that information is discarded.",
+      "acceptance_criteria": [
+        "`extra` lists function names in spec order; it never affects `status`.",
+        "Stored with the match (schema change approved first) or recomputed from `functions_json`, with the choice explained in the PR.",
+        "API output adds fields without changing existing ones.",
+        "Tests use the token and not_token fixtures."
+      ],
+      "guidance": [
+        "`wasm.functions_json` already stores every function signature."
+      ],
+      "pointers": [
+        "internal/match/match.go",
+        "internal/store/wasm.go",
+        "internal/api/wasm.go"
+      ],
+      "existing_issue": 77
+    },
+    {
+      "title": "feat(rules): keep historical SEP-41 rulesets and report which version a Wasm matches",
+      "complexity": "high",
+      "area": "rules",
+      "description": "Ship rule files for earlier SEP-41 versions (before `MuxedAddress` was added to `transfer`) alongside the current one, and report the newest version each Wasm matches.",
+      "why": "Many deployed tokens predate SEP-41 v0.4.0. Saying which version they implement is more useful, and more accurate, than a single accepted-types list.",
+      "acceptance_criteria": [
+        "Each historical rule file cites the SEP-41 commit it was read from.",
+        "The matcher reports the highest matching version; current behaviour for the latest version is unchanged.",
+        "`token_full_legacy.wasm` reports the pre-MuxedAddress version; `token_full_sep.wasm` the current one.",
+        "API and docs explain the field."
+      ],
+      "guidance": [
+        "Read the SEP-41 history in stellar-protocol to find the exact commits."
+      ],
+      "pointers": [
+        "rules/sep-0041.json",
+        "internal/match/rules.go",
+        "docs/rule-files.md"
+      ],
+      "existing_issue": 78
+    },
+    {
+      "title": "feat(sync): detect a testnet reset and refuse to continue",
+      "complexity": "high",
+      "area": "sync",
+      "description": "Testnet is periodically reset, which restarts ledger numbers under the same passphrase. Detect it (stored `last_ledger` far ahead of the RPC's latest, or a stored ledger hash that no longer matches) and stop with a dedicated sentinel error and a message telling the operator to start a new index.",
+      "why": "After a reset, the existing index describes contracts that no longer exist. Continuing would silently mix two networks' histories in one database.",
+      "acceptance_criteria": [
+        "A new sentinel (for example `ErrNetworkReset`) is returned before anything is written.",
+        "Detection stores a ledger hash checkpoint in `sync_state` so it does not rely on ledger numbers alone.",
+        "Tests simulate a reset with the fake RPC used in `internal/sync/loop_test.go` and assert the database is unchanged.",
+        "`docs/how-it-works.md` and the troubleshooting docs explain what to do."
+      ],
+      "guidance": [
+        "Today `loop.go` returns a generic error when the stored ledger exceeds the RPC latest; build on that path."
+      ],
+      "pointers": [
+        "internal/sync/loop.go",
+        "internal/sync/loop_test.go",
+        "internal/store/sync.go"
+      ],
+      "existing_issue": 79
+    },
+    {
+      "title": "feat(sync): record ledger protocol versions and fail clearly on unknown XDR",
+      "complexity": "high",
+      "area": "sync",
+      "description": "Record the ledger protocol version seen in each batch in `sync_state`, log protocol changes, and when ledger metadata cannot be decoded because of an unknown XDR arm, stop with an error that names the protocol, the ledger and the SDK version to upgrade.",
+      "why": "Testnet's Protocol 30 upgrade stopped sync with a raw decoder message (`'3' is not a valid StellarValueType`) and took a week to diagnose. The next upgrade should explain itself.",
+      "acceptance_criteria": [
+        "The protocol version is read from each ledger header and stored with the last ledger.",
+        "An unknown-XDR failure is wrapped in a sentinel error with ledger, protocol and pinned SDK version in the message.",
+        "A test feeds a header with a future `StellarValueType` and asserts the message, using the re-encoding approach in `internal/ingest/protocol30_test.go`.",
+        "`stats` and `/v1/health` report the last seen protocol without changing existing fields' meaning."
+      ],
+      "guidance": [
+        "The Protocol 30 test shows how to build headers the decoder rejects."
+      ],
+      "pointers": [
+        "internal/ingest/ledgers.go",
+        "internal/ingest/protocol30_test.go",
+        "internal/sync/loop.go"
+      ],
+      "existing_issue": 80
+    },
+    {
+      "title": "feat(ingest): fetch Wasm in parallel with a bounded worker pool and ordered commits",
+      "complexity": "high",
+      "area": "sync",
+      "description": "New code hashes are fetched and analysed one batch at a time. Fetch and analyse them with a bounded pool (using `--rpc-concurrency`), while keeping commits in ledger order and the one-transaction-per-batch rule.",
+      "why": "Seeding mainnet took 18 minutes on a resumed run. Most of that is waiting on RPC round trips that could overlap.",
+      "acceptance_criteria": [
+        "Concurrency is bounded by the configured value; no unbounded goroutines.",
+        "Results are committed in deterministic order, and replaying a batch is still idempotent (the replay test passes unchanged).",
+        "Cancellation stops all workers and leaves `last_ledger` at the previous batch.",
+        "A benchmark with a fake RPC that adds latency shows the speed-up; numbers are recorded with the machine and date."
+      ],
+      "guidance": [
+        "`internal/rpc` already retries with backoff; do not add a second retry layer."
+      ],
+      "pointers": [
+        "internal/ingest/fetch.go",
+        "internal/ingest/indexer.go",
+        "internal/rpc/client.go"
+      ],
+      "existing_issue": 81
+    },
+    {
+      "title": "feat(ingest): verify fetched code against its ledger key hash",
+      "complexity": "high",
+      "area": "security",
+      "description": "When contract code is fetched with `getLedgerEntries`, check that the SHA-256 of the returned Wasm bytes equals the hash in the `ContractCode` key before parsing or storing anything. A mismatch is recorded as a parse error and never produces claims.",
+      "why": "The index trusts the RPC provider's bytes. A misbehaving or compromised provider could attach another contract's metadata to a hash, and nothing would notice.",
+      "acceptance_criteria": [
+        "Every fetched code entry is hashed and compared before analysis.",
+        "A mismatch stores `parse_status='error'` with a clear message and no claims or matches.",
+        "Tests use a fake RPC that returns the wrong bytes for a key.",
+        "`docs/how-it-works.md` documents the check."
+      ],
+      "guidance": [
+        "`internal/ingest/fetch.go` decodes the returned entries; add the check there."
+      ],
+      "pointers": [
+        "internal/ingest/fetch.go",
+        "internal/ingest/analyze.go",
+        "docs/how-it-works.md"
+      ],
+      "existing_issue": 82
+    },
+    {
+      "title": "test(sync): property-based replay over random fact sequences",
+      "complexity": "high",
+      "area": "sync",
+      "description": "Generate random but valid sequences of contract facts (creates, upgrades, CAP-85 reference updates, archival and restoration), apply them in different batch splits and with replays, and assert the final database dump is identical every time.",
+      "why": "The seven §5.9 tests cover chosen scenarios. Idempotency and batch-independence should hold for every sequence, and random sequences find the cases nobody thought to write.",
+      "acceptance_criteria": [
+        "A generator produces valid fact sequences from a seed; failing seeds are printed for reproduction.",
+        "The same sequence applied as one batch, many batches, and with a full replay gives identical dumps (reuse the dump helper in `internal/sync/loop_test.go`).",
+        "Runs a bounded number of cases in normal `go test` and more under a flag.",
+        "Any bug found is fixed in the same PR with a regression test."
+      ],
+      "guidance": [
+        "`TestRetentionGapLeavesEveryTableUnchanged` already has a whole-database dump helper."
+      ],
+      "pointers": [
+        "internal/ingest/apply.go",
+        "internal/sync/loop_test.go",
+        "internal/ingest/apply_test.go"
+      ],
+      "existing_issue": 83
+    },
+    {
+      "title": "test(store): fault-injection harness that fails every write point",
+      "complexity": "high",
+      "area": "store",
+      "description": "Build a test harness that makes the N-th store write fail (for every N in a batch), then reruns sync and asserts the final database equals a clean run.",
+      "why": "The crash-mid-batch test cancels at one point. A harness that fails at every write proves the one-transaction-per-batch guarantee everywhere, including fetch and analysis writes.",
+      "acceptance_criteria": [
+        "The harness wraps the store's write path without changing production behaviour.",
+        "For a recorded batch, every failure point leaves `last_ledger` unchanged and a rerun produces the clean-run dump.",
+        "Runs in under a minute in normal `go test`.",
+        "Documented in the test file so new write paths are covered automatically."
+      ],
+      "guidance": [
+        "`store.Tx` centralises writes through `exec`; inject failures there in tests."
+      ],
+      "pointers": [
+        "internal/store/write.go",
+        "internal/sync/loop_test.go",
+        "internal/ingest/indexer.go"
+      ],
+      "existing_issue": 84
+    },
+    {
+      "title": "ci(sync): nightly read-only mainnet follow job",
+      "complexity": "high",
+      "area": "tooling",
+      "description": "Add a scheduled workflow, like the testnet integration job, that follows mainnet for 30 minutes from the tip against a configured RPC URL (stored as a repository variable or secret), with no transactions and no stored data.",
+      "why": "Testnet's protocol upgrade broke sync for a week before anyone saw it; mainnet will upgrade too. A nightly mainnet run catches the same failure before users do.",
+      "acceptance_criteria": [
+        "The workflow reads the RPC URL from configuration and skips cleanly, with a notice, when none is set.",
+        "It reuses the testnet integration test with the network as a parameter, not a copy.",
+        "Pass criteria match the testnet job: no errors over 30 minutes and lag under 10 ledgers at the end.",
+        "Not a required check for pull requests; actions pinned to SHAs."
+      ],
+      "guidance": [
+        "See `.github/workflows/integration.yml` and `internal/sync/integration_test.go`."
+      ],
+      "pointers": [
+        ".github/workflows/integration.yml",
+        "internal/sync/integration_test.go",
+        "internal/config/config.go"
+      ],
+      "existing_issue": 85
+    },
+    {
+      "title": "feat(config): futurenet network support",
+      "complexity": "high",
+      "area": "sync",
+      "description": "Add `futurenet` as a third network: passphrase, default RPC URL, database default, docs and tests, everywhere `mainnet` and `testnet` are handled today.",
+      "why": "Futurenet runs upcoming protocol versions first. Indexing it gives early warning of XDR and contract changes before they reach testnet and mainnet.",
+      "acceptance_criteria": [
+        "`--network futurenet` works for every command; the passphrase is checked against `getNetwork` like the others.",
+        "The verify and testnet-only guards keep treating futurenet as not-testnet unless the code is explicitly reviewed.",
+        "Config tests cover the new network; docs list it.",
+        "The passphrase and default URL are copied from current Stellar documentation, cited in the PR."
+      ],
+      "guidance": [
+        "`internal/config/config.go` defines `Network` values."
+      ],
+      "pointers": [
+        "internal/config/config.go",
+        "internal/config/config_test.go",
+        "docs/self-hosting.md"
+      ],
+      "existing_issue": 86
+    },
+    {
+      "title": "perf(sync): throughput benchmark on a recorded ledger corpus",
+      "complexity": "high",
+      "area": "sync",
+      "description": "Add a benchmark that replays a committed corpus of real ledgers through `LedgerSource`, change extraction and the store, and reports ledgers per second and allocations; record results in `docs/`.",
+      "why": "There is no measured number for how fast the indexer applies ledgers, so nobody can tell whether a change made sync slower or whether one machine can keep up with mainnet.",
+      "acceptance_criteria": [
+        "Uses only committed fixtures; no network.",
+        "Reports ledgers/s, facts/s and allocations; results with machine, date and Go version are in `docs/`.",
+        "Profiles the top three hotspots and lists them in the PR, without necessarily fixing them.",
+        "Runs under `go test -bench`, not in normal tests."
+      ],
+      "guidance": [
+        "Depends on, or can include, the recorded ledger corpus issue."
+      ],
+      "pointers": [
+        "internal/ingest/ledgers.go",
+        "internal/ingest/changes.go",
+        "docs/query-benchmark.md"
+      ],
+      "existing_issue": 87
+    },
+    {
+      "title": "test(ingest): record a corpus of real testnet ledgers covering every change type",
+      "complexity": "high",
+      "area": "sync",
+      "description": "Record real `getLedgers` responses that include a Wasm deploy, an instance upgrade, a SAC creation, a CAP-85 executable reference create and update, an archival and a restoration, and commit them with tests asserting the extracted facts.",
+      "why": "Change extraction is tested on two recorded ledgers plus synthetic XDR. Real ledgers for every change type would catch encoding details synthetic tests miss.",
+      "acceptance_criteria": [
+        "A script finds and records each ledger, writing the RPC response and the source ledger number.",
+        "Tests assert the exact facts extracted from each recorded ledger.",
+        "Files are trimmed to the needed ledgers and stay small.",
+        "`internal/rpc/testdata/README.md` documents how each was found."
+      ],
+      "guidance": [
+        "Existing recorded data lives in `internal/rpc/testdata/getLedgers.json`."
+      ],
+      "pointers": [
+        "internal/rpc/testdata/README.md",
+        "internal/ingest/changes_test.go",
+        "internal/ingest/changes.go"
+      ],
+      "existing_issue": 88
+    },
+    {
+      "title": "test(ingest): fuzz change extraction over mutated LedgerCloseMeta",
+      "complexity": "high",
+      "area": "sync",
+      "description": "Add a fuzz target that mutates recorded `LedgerCloseMeta` XDR and runs decoding plus `ExtractContractFacts`, asserting no panic, bounded memory, and that every successfully decoded ledger yields facts consistent with its own changes.",
+      "why": "Ledger metadata comes from the network and is untrusted input, but only the Wasm parser is fuzzed today.",
+      "acceptance_criteria": [
+        "Seeds come from the recorded ledgers.",
+        "Inputs above the configured XDR limits must fail with a limit error, not allocate.",
+        "Ran 10 minutes locally with the summary in the PR; crashes committed with fixes.",
+        "Added to `fuzz-smoke` with a short duration."
+      ],
+      "guidance": [
+        "`UnmarshalBase64` in `internal/ingest/instance.go` applies the XDR limits."
+      ],
+      "pointers": [
+        "internal/ingest/changes.go",
+        "internal/ingest/instance.go",
+        "Makefile"
+      ],
+      "existing_issue": 89
+    },
+    {
+      "title": "feat(ingest): retry queue for Wasm whose fetch failed",
+      "complexity": "high",
+      "area": "sync",
+      "description": "When fetching a new code hash fails after the RPC client's retries, record it in a retry queue instead of failing the whole batch, keep sync moving, and retry queued hashes on later batches with backoff.",
+      "why": "One unreachable entry should not stall indexing of the whole network, but it also must not be silently skipped.",
+      "acceptance_criteria": [
+        "Queued hashes are visible in `stats` and `/v1/stats` as a count.",
+        "A queued Wasm has `parse_status` that says so and no claims until it is fetched.",
+        "Retries are bounded and logged with the hash only.",
+        "Schema changes have operator approval first; tests cover queueing, retry success and permanent failure."
+      ],
+      "guidance": [
+        "Claims and matches must never be invented for a Wasm that was not fetched."
+      ],
+      "pointers": [
+        "internal/ingest/fetch.go",
+        "internal/store/wasm.go",
+        "internal/sync/loop.go"
+      ],
+      "existing_issue": 90
+    },
+    {
+      "title": "feat(sync): optional cross-provider ledger-hash verification",
+      "complexity": "high",
+      "area": "sync",
+      "description": "Add an opt-in mode where each batch's ledger hashes are confirmed against a second RPC provider before commit, and sync stops if the providers disagree.",
+      "why": "The index trusts one provider for everything. Operators who publish results may want independent confirmation of what they ingest.",
+      "acceptance_criteria": [
+        "Enabled by a flag naming a second RPC URL; both are checked to be on the configured network.",
+        "A disagreement stops sync with both hashes in the error and writes nothing.",
+        "Tests use two fake RPCs, one returning a different hash.",
+        "The cost (extra requests) is documented."
+      ],
+      "guidance": [
+        "Ledger hashes are available from the ledger header in `LedgerCloseMeta`."
+      ],
+      "pointers": [
+        "internal/sync/loop.go",
+        "internal/rpc/client.go",
+        "internal/ingest/ledgers.go"
+      ],
+      "existing_issue": 91
+    },
+    {
+      "title": "feat(sync): --stop-ledger for bounded, reproducible replays",
+      "complexity": "high",
+      "area": "sync",
+      "description": "Add `sync --stop-ledger N` to stop after committing ledger N, so an index can be built to an exact ledger for reproducible reports, tests and comparisons.",
+      "why": "Reports cite ledger numbers, but there is no way to build an index that stops exactly at one. Comparisons between machines or versions need the same end point.",
+      "acceptance_criteria": [
+        "Sync commits through N and exits 0, never past it, even mid-batch (the last batch is shortened).",
+        "Combines correctly with `--seed` and `--start-ledger`; invalid ranges exit 1 before any network call.",
+        "Tests cover stopping inside a batch and at a batch boundary.",
+        "Documented in `docs/cli.md`."
+      ],
+      "guidance": [
+        "`ingest.LedgerSource.Fetch` takes a start ledger; add an upper bound."
+      ],
+      "pointers": [
+        "cmd/sep47idx/cmd_sync.go",
+        "internal/sync/loop.go",
+        "internal/ingest/ledgers.go"
+      ],
+      "existing_issue": 92
+    },
+    {
+      "title": "feat(store): track live_until_ledger and expose entries close to archival",
+      "complexity": "high",
+      "area": "store",
+      "description": "Store the `liveUntilLedgerSeq` of code and instance entries when they are read, and expose contracts whose code or instance will be archived within a given number of ledgers.",
+      "why": "Archived code keeps its last known claims, but integrators also want to know which contracts are about to become unavailable.",
+      "acceptance_criteria": [
+        "TTLs are recorded from `getLedgerEntries` responses and from ledger TTL changes, with the source noted.",
+        "An API and CLI view lists entries expiring before a ledger; new API parameters get operator approval first.",
+        "Unknown TTLs are NULL, never guessed.",
+        "Tests cover TTL extension and expiry."
+      ],
+      "guidance": [
+        "`rpc.LedgerEntry.LiveUntilLedgerSeq` is already decoded."
+      ],
+      "pointers": [
+        "internal/rpc/methods.go",
+        "internal/ingest/fetch.go",
+        "migrations/0001_init.sql"
+      ],
+      "existing_issue": 93
+    },
+    {
+      "title": "feat(ingest): record transaction provenance for creations and upgrades",
+      "complexity": "high",
+      "area": "sync",
+      "description": "Record the transaction hash (and, where the metadata exposes it, the source account) that created each contract and caused each upgrade, and show it in contract history.",
+      "why": "History shows that a contract changed at a ledger, not which transaction changed it. Auditors want to jump straight to the transaction.",
+      "acceptance_criteria": [
+        "Provenance is read from transaction metadata during change extraction, never inferred.",
+        "Schema change approved before coding; missing provenance (seeded rows) is NULL.",
+        "History in the API and CLI includes the field.",
+        "Tests use recorded ledgers with a known upgrade transaction."
+      ],
+      "guidance": [
+        "Changes are already walked per transaction in `internal/ingest/changes.go`."
+      ],
+      "pointers": [
+        "internal/ingest/changes.go",
+        "internal/store/details.go",
+        "migrations/0001_init.sql"
+      ],
+      "existing_issue": 94
+    },
+    {
+      "title": "feat(rpc): authenticated RPC providers without logging secrets",
+      "complexity": "high",
+      "area": "security",
+      "description": "Support RPC providers that require an API key: read a header name and value from the environment (for example `SEP47IDX_RPC_HEADER`), send it on every request, and guarantee it never appears in logs, errors or stored state.",
+      "why": "Paid and rate-limited RPC providers need authentication. Without first-class support, operators put keys in URLs, which then appear in logs.",
+      "acceptance_criteria": [
+        "The header is applied by the RPC client; URLs containing credentials are rejected with advice to use the header.",
+        "Errors and logs are tested to never contain the header value.",
+        "Documented in `docs/self-hosting.md` with the env var name.",
+        "No secret is ever written to `sync_state` (`rpc_url` is stored without credentials)."
+      ],
+      "guidance": [
+        "`internal/rpc/client.go` builds every request in one place."
+      ],
+      "pointers": [
+        "internal/rpc/client.go",
+        "internal/config/config.go",
+        "docs/self-hosting.md"
+      ],
+      "existing_issue": 95
+    },
+    {
+      "title": "feat(cli): migration status and dry run with checksums",
+      "complexity": "high",
+      "area": "store",
+      "description": "Add `sep47idx migrate --status` and `--dry-run`, which list applied and pending migrations, and store a checksum of each applied migration so an edited migration file is detected at startup.",
+      "why": "Migrations are applied automatically on start. Operators cannot see what will change before it does, and an edited migration would go unnoticed.",
+      "acceptance_criteria": [
+        "`--status` and `--dry-run` make no changes; output lists versions, names and checksums.",
+        "Startup refuses to run when an applied migration's checksum differs, with a clear message.",
+        "Existing databases without checksums are upgraded once, recording current checksums.",
+        "Tests cover pending, applied and tampered migrations."
+      ],
+      "guidance": [
+        "Migrations are embedded from `migrations/` via `migrations/embed.go`."
+      ],
+      "pointers": [
+        "internal/store/store.go",
+        "migrations/embed.go",
+        "cmd/sep47idx/main.go"
+      ],
+      "existing_issue": 96
+    },
+    {
+      "title": "test(store): upgrade-path harness across every historical migration",
+      "complexity": "high",
+      "area": "store",
+      "description": "Build databases at each historical schema version (from the committed migrations), populate them with representative rows, migrate forward, and assert data and invariants survive.",
+      "why": "Each migration is tested from empty. Real users upgrade databases full of data, which is where migrations fail.",
+      "acceptance_criteria": [
+        "For every migration N, a database at N-1 with sample rows upgrades cleanly.",
+        "All SQL invariants still hold after upgrade (reuse the raw-SQL invariant checks).",
+        "New migrations are covered automatically.",
+        "Runs in normal `go test` in under 30 seconds."
+      ],
+      "guidance": [
+        "`0002_functions_json.sql` is the first real upgrade case: rows before it must show NULL `functions_json`."
+      ],
+      "pointers": [
+        "internal/store/store.go",
+        "internal/store/store_test.go",
+        "migrations/0002_functions_json.sql"
+      ],
+      "existing_issue": 97
+    },
+    {
+      "title": "test(store): query-plan regression tests for every API query",
+      "complexity": "high",
+      "area": "store",
+      "description": "For each query behind the API and CLI, assert with `EXPLAIN QUERY PLAN` that it uses the intended index and never scans `wasm_claims` or `contract_versions` in full.",
+      "why": "The 1M-row benchmark passed because of indexes. A refactor that drops an index use would only show up as slow production queries.",
+      "acceptance_criteria": [
+        "One test per query lists the expected index names.",
+        "Failures print the actual plan.",
+        "Covers catalog filters for every tier, contract detail, history, wasm detail, seps, stats and gap.",
+        "Documented next to `docs/query-benchmark.md`."
+      ],
+      "guidance": [
+        "Plans depend on `ANALYZE`; build the fixture database the same way in every test."
+      ],
+      "pointers": [
+        "internal/store/catalog.go",
+        "internal/store/gap.go",
+        "docs/query-benchmark.md"
+      ],
+      "existing_issue": 98
+    },
+    {
+      "title": "perf(store): 10M-claim benchmark and materialization decision record",
+      "complexity": "high",
+      "area": "store",
+      "description": "Extend the benchmark to 10 million claim rows and 1 million contracts, measure p50/p95 for every API query, and write a decision record on whether the `claims` view should be materialized at that scale.",
+      "why": "The 1M benchmark settled the question for today. Adoption growth or factory deployments could reach 10M rows, and the decision should be made from numbers, not guesses.",
+      "acceptance_criteria": [
+        "The fixture builder is reproducible from one command.",
+        "Results include machine, date, Go version and database size.",
+        "If p95 exceeds 200 ms, the record compares a materialized design with measured before/after numbers.",
+        "Results are added to `docs/query-benchmark.md`."
+      ],
+      "guidance": [
+        "`internal/store/catalog_benchmark_test.go` builds the current 1M fixture."
+      ],
+      "pointers": [
+        "internal/store/catalog_benchmark_test.go",
+        "docs/query-benchmark.md",
+        "migrations/0001_init.sql"
+      ],
+      "existing_issue": 99
+    },
+    {
+      "title": "feat(cli): maintenance command for ANALYZE, vacuum and integrity checks",
+      "complexity": "high",
+      "area": "store",
+      "description": "Add `sep47idx maintenance` that runs `PRAGMA integrity_check`, `ANALYZE` and an incremental vacuum safely while no sync is writing, and reports what it did.",
+      "why": "A long-running index grows and its query statistics go stale. Operators need a supported way to keep it healthy instead of hand-written SQL.",
+      "acceptance_criteria": [
+        "Refuses to run while another process holds the write lock, with a clear message.",
+        "Reports integrity results, size before and after, and duration.",
+        "Tests run it on a fixture database and on a deliberately corrupted copy.",
+        "Documented in `docs/self-hosting.md` and `MAINTAINING.md`."
+      ],
+      "guidance": [
+        "modernc.org/sqlite supports these pragmas; keep `CGO_ENABLED=0`."
+      ],
+      "pointers": [
+        "internal/store/store.go",
+        "cmd/sep47idx/main.go",
+        "docs/self-hosting.md"
+      ],
+      "existing_issue": 100
+    },
+    {
+      "title": "feat(api): serve several networks from one process",
+      "complexity": "high",
+      "area": "api",
+      "description": "Let `sep47idx serve` open one read-only database per network (for example `--db mainnet=...,testnet=...`) and route requests by network, with each response's `network` field correct.",
+      "why": "Public deployments want mainnet and testnet behind one endpoint. Running two processes doubles operations work for no benefit.",
+      "acceptance_criteria": [
+        "The route design (path prefix or query parameter) is approved before coding, since API paths are a fixed surface.",
+        "Each store is opened `mode=ro` and checked against its network passphrase.",
+        "Single-network flags keep working unchanged.",
+        "Handler tests cover both networks and an unknown network."
+      ],
+      "guidance": [
+        "CLAUDE.md §5.11 fixes API paths; propose the design in the issue first."
+      ],
+      "pointers": [
+        "cmd/sep47idx/cmd_serve.go",
+        "internal/api/server.go",
+        "internal/config/config.go"
+      ],
+      "existing_issue": 101
+    },
+    {
+      "title": "feat(store): data-quality checker against the RPC",
+      "complexity": "high",
+      "area": "store",
+      "description": "Add a command that samples N stored contracts, reads their instance entries from the RPC, and reports any whose executable (Wasm hash, SAC or CAP-85 reference) differs from the index at the index's `last_ledger`.",
+      "why": "Sync is tested offline, but nothing checks the live index against the network. A sampled comparison is cheap evidence the index is right.",
+      "acceptance_criteria": [
+        "Sampling is random but reproducible with a seed.",
+        "Differences are reported with contract ID, stored value and RPC value; exit code 1 when any differ.",
+        "Accounts for contracts changed after `last_ledger` so a lagging index is not reported as wrong.",
+        "Tests use a fake RPC; docs describe running it weekly."
+      ],
+      "guidance": [
+        "`internal/ingest/seed.go` already reads instance entries by contract ID."
+      ],
+      "pointers": [
+        "internal/ingest/seed.go",
+        "internal/ingest/instance.go",
+        "MAINTAINING.md"
+      ],
+      "existing_issue": 102
+    },
+    {
+      "title": "feat(store): publish nightly read-only database snapshots",
+      "complexity": "high",
+      "area": "store",
+      "description": "Add a workflow and command that build a consistent snapshot of a seeded testnet index, compress it, and publish it with a SHA-256 checksum so users can start from a snapshot instead of seeding.",
+      "why": "Seeding takes many minutes and an RPC with good limits. A verified snapshot lets anyone query the index in seconds.",
+      "acceptance_criteria": [
+        "Snapshots use a consistent SQLite backup, never a raw copy of a live file.",
+        "Each snapshot records network, `last_ledger`, schema version and parser version in a manifest.",
+        "Users can start `sync` from a snapshot and continue; tested end to end.",
+        "Retention and hosting location are documented; secrets are never in the snapshot."
+      ],
+      "guidance": [
+        "Depends on the online backup command (Soroban-CII/soroindex#44)."
+      ],
+      "pointers": [
+        "internal/store/store.go",
+        ".github/workflows/integration.yml",
+        "docs/self-hosting.md"
+      ],
+      "existing_issue": 103
+    },
+    {
+      "title": "feat(api): ETag and If-None-Match on every GET endpoint",
+      "complexity": "high",
+      "area": "api",
+      "description": "Return an `ETag` derived from the response's `as_of_ledger`, parser version and ruleset versions (plus the request's query), and answer `304 Not Modified` to a matching `If-None-Match`.",
+      "why": "Most API reads repeat between ledgers. Conditional requests let clients and caches skip unchanged responses at no risk of staleness, because the tag changes whenever the index advances.",
+      "acceptance_criteria": [
+        "Every `/v1` GET sets a strong ETag; error responses do not.",
+        "`If-None-Match` with a matching tag returns 304 with no body; any change to `last_ledger`, parser or ruleset version changes the tag.",
+        "Tests cover each endpoint, a stale tag and a weak/invalid header.",
+        "`docs/api.md` documents the behaviour with a real captured request."
+      ],
+      "guidance": [
+        "Compute the tag from values already read for the response; do not hash the whole body unless needed."
+      ],
+      "pointers": [
+        "internal/api/server.go",
+        "internal/api/catalog.go",
+        "docs/api.md"
+      ],
+      "existing_issue": 104
+    },
+    {
+      "title": "feat(api): request IDs, access logs and a Prometheus-text /metrics endpoint",
+      "complexity": "high",
+      "area": "api",
+      "description": "Add middleware that assigns each request an ID (returned in a header), writes one structured `slog` access line per request, and exposes request counts and latency histograms per route at `/metrics` in Prometheus text format, using only the standard library.",
+      "why": "An operator running the public API has no request logs or latency numbers today, so slow queries and abuse are invisible.",
+      "acceptance_criteria": [
+        "Access logs include route pattern, status, duration and request ID, and never full query strings with cursors or any request body.",
+        "`/metrics` is off by default and enabled with a flag; its path choice is approved since API paths are a fixed surface.",
+        "Histograms use fixed buckets; output parses as valid Prometheus exposition format (tested).",
+        "No new dependency."
+      ],
+      "guidance": [
+        "`internal/api/server.go` `ServeHTTP` is the single entry point."
+      ],
+      "pointers": [
+        "internal/api/server.go",
+        "cmd/sep47idx/cmd_serve.go",
+        "docs/self-hosting.md"
+      ],
+      "existing_issue": 105
+    },
+    {
+      "title": "test(api): fuzz every query-parameter parser",
+      "complexity": "high",
+      "area": "api",
+      "description": "Add fuzz targets that drive each endpoint's parameter parsing (`implements`, `implements_any`, `tier`, `kind`, `limit`, `cursor`, path IDs and hashes) with arbitrary strings through the real handlers on a fixture store.",
+      "why": "API parameters are untrusted input. Handler tests check chosen bad inputs; fuzzing checks that no input panics, leaks internals or returns a non-standard error shape.",
+      "acceptance_criteria": [
+        "Every response is either 200 with valid JSON or one of the documented error codes in the standard shape.",
+        "No response body contains file paths, SQL or Go type names.",
+        "Ran 10 minutes per target locally, with summaries in the PR; crashes committed with fixes.",
+        "Added to `fuzz-smoke` with a short duration."
+      ],
+      "guidance": [
+        "Reuse the fixture store helpers in `internal/api/server_test.go`."
+      ],
+      "pointers": [
+        "internal/api/catalog.go",
+        "internal/api/server_test.go",
+        "Makefile"
+      ],
+      "existing_issue": 106
+    },
+    {
+      "title": "feat(api): versioned, tamper-evident cursors with stable ordering during sync",
+      "complexity": "high",
+      "area": "api",
+      "description": "Version the cursor format, reject cursors from another schema or ruleset version with a clear 400, and prove that paging through results while sync commits new rows never repeats or skips a row that existed when paging started.",
+      "why": "Keyset cursors are opaque base64 today. A cursor reused across an upgrade, or paging during sync, can give confusing results with no explanation.",
+      "acceptance_criteria": [
+        "Cursors carry a version; old or foreign cursors return `bad_request` with a message saying to restart paging.",
+        "A test pages through `/v1/contracts` while a writer inserts rows and asserts no duplicates or gaps among the original rows.",
+        "Tampered cursors are rejected without revealing why beyond `invalid cursor`.",
+        "`docs/api.md` documents cursor lifetime."
+      ],
+      "guidance": [
+        "`internal/store/pagination.go` encodes cursors."
+      ],
+      "pointers": [
+        "internal/store/pagination.go",
+        "internal/api/catalog.go",
+        "docs/api.md"
+      ],
+      "existing_issue": 107
+    },
+    {
+      "title": "feat(api): archived and executable-reference filters for /v1/contracts",
+      "complexity": "high",
+      "area": "api",
+      "description": "Propose and implement filters on `/v1/contracts` for archived state and for contracts that share a CAP-85 executable reference owner, with keyset pagination and the existing tier rules.",
+      "why": "Integrators ask which tokens are still live, and which contracts upgrade together through one reference. Today they must page everything and filter client-side.",
+      "acceptance_criteria": [
+        "Parameter names and semantics are approved by the operator before coding (fixed API surface).",
+        "Filters combine with `implements`, `implements_any`, `tier` and `kind`; SACs never appear under `tier=declared`.",
+        "Tests cover each filter alone and combined, pagination, and bad values.",
+        "Queries use an index (asserted with a query-plan test)."
+      ],
+      "guidance": [
+        "`idx_contracts_ref` already indexes reference contracts."
+      ],
+      "pointers": [
+        "internal/store/catalog.go",
+        "internal/api/catalog.go",
+        "migrations/0001_init.sql"
+      ],
+      "existing_issue": 108
+    },
+    {
+      "title": "feat(api): Server-Sent Events stream of contract upgrades",
+      "complexity": "high",
+      "area": "api",
+      "description": "Propose and implement a read-only SSE endpoint that streams new contract versions (contract ID, old and new Wasm hash, ledger, kind) as the index commits them, with resume from a ledger via `Last-Event-ID`.",
+      "why": "Wallets and monitoring tools want to know when a token they hold is upgraded. Polling history for every contract does not scale.",
+      "acceptance_criteria": [
+        "Endpoint path and event shape are approved before coding.",
+        "Events come only from committed rows; the API process stays read-only.",
+        "Resume from `Last-Event-ID` replays missed versions within a bounded window.",
+        "Connection limits and idle timeouts are configurable; tests cover resume and disconnect."
+      ],
+      "guidance": [
+        "`contract_versions` holds every version with `from_ledger`."
+      ],
+      "pointers": [
+        "internal/api/server.go",
+        "internal/store/details.go",
+        "docs/api.md"
+      ],
+      "existing_issue": 109
+    },
+    {
+      "title": "feat(api): HTTP server hardening with timeouts, header limits and slow-client tests",
+      "complexity": "high",
+      "area": "security",
+      "description": "Make the server's read-header, read, write and idle timeouts and the maximum header size configurable with safe defaults, and add tests that a slow-loris client and oversized headers are cut off without affecting other clients.",
+      "why": "The API is meant to be public. Default `net/http` settings let slow clients hold connections open indefinitely.",
+      "acceptance_criteria": [
+        "Defaults are documented and applied in `serve`; flags and env vars override them.",
+        "Tests open slow and oversized connections against a real listener and assert they are closed within the limits.",
+        "Graceful shutdown still completes in-flight requests.",
+        "`docs/self-hosting.md` lists the settings."
+      ],
+      "guidance": [
+        "`cmd/sep47idx/cmd_serve.go` constructs the `http.Server`."
+      ],
+      "pointers": [
+        "cmd/sep47idx/cmd_serve.go",
+        "cmd/sep47idx/cmd_serve_test.go",
+        "docs/self-hosting.md"
+      ],
+      "existing_issue": 110
+    },
+    {
+      "title": "feat(pkg): typed Go client for the /v1 API",
+      "complexity": "high",
+      "area": "api",
+      "description": "Add `pkg/client`: a typed client for every `/v1` endpoint with context timeouts, the standard error shape as a Go error type, and iterators that follow cursors.",
+      "why": "Go integrators otherwise rewrite the same HTTP and pagination code, and get tier handling wrong. A small official client documents the contract in code.",
+      "acceptance_criteria": [
+        "Every endpoint has a method returning the response types from `internal/store` (or public copies of them).",
+        "Iterators follow `next_cursor` until done and stop on context cancellation.",
+        "Errors expose the API `code` for `errors.As`.",
+        "Tests run against the real handler via `httptest`; package docs include a runnable example."
+      ],
+      "guidance": [
+        "Keep it dependency-free, like the rest of the module."
+      ],
+      "pointers": [
+        "internal/api/server.go",
+        "internal/store/details.go",
+        "pkg/sepmeta/doc.go"
+      ],
+      "existing_issue": 111
+    },
+    {
+      "title": "test(api): golden response snapshots for every endpoint",
+      "complexity": "high",
+      "area": "api",
+      "description": "Build a fixture index from the golden Wasm and recorded ledgers, then snapshot every endpoint's JSON response (with a `-update` flag), so any change in response shape shows up as a reviewable diff.",
+      "why": "The contract detail shape is a fixed surface (CLAUDE.md §5.11). Field-by-field assertions cover parts of it; a snapshot covers all of it.",
+      "acceptance_criteria": [
+        "Snapshots cover every endpoint, a SAC, a CAP-85 reference contract and an upgraded contract.",
+        "Volatile values (timestamps) are normalised, not dropped.",
+        "`go test ./internal/api -update` regenerates snapshots; CI fails on drift.",
+        "`docs/api.md` examples are checked against the snapshots."
+      ],
+      "guidance": [
+        "CLAUDE.md §4: golden files live under `testdata/` with a `-update` flag."
+      ],
+      "pointers": [
+        "internal/api/details_test.go",
+        "internal/api/server_test.go",
+        "docs/api.md"
+      ],
+      "existing_issue": 112
+    },
+    {
+      "title": "feat(api): toolchain statistics endpoint",
+      "complexity": "high",
+      "area": "api",
+      "description": "Propose and implement an endpoint that reports the distribution of Rust, SDK and CLI versions found in Wasm meta (`rsver`, `rssdkver`, `cliver`), with declaration and SEP-41 match rates per SDK version.",
+      "why": "Outreach works best aimed at toolchains: if declarations only appear with recent SDKs, the fix is documentation for that SDK.",
+      "acceptance_criteria": [
+        "Endpoint design approved before coding.",
+        "Counts come from stored `meta_json`; unknown or missing versions are their own bucket.",
+        "Weighted by unique hash and by contract, like the adoption report.",
+        "Tests use fixtures with known meta; documented in `docs/api.md`."
+      ],
+      "guidance": [
+        "`wasm.meta_json` keeps all raw meta pairs."
+      ],
+      "pointers": [
+        "internal/store/statistics.go",
+        "internal/api/stats.go",
+        "docs/api.md"
+      ],
+      "existing_issue": 113
+    },
+    {
+      "title": "feat(api): bulk contract lookup",
+      "complexity": "high",
+      "area": "api",
+      "description": "Propose and implement a read-only way to fetch summaries for many contract IDs in one request (for example `GET /v1/contracts?ids=C...,C...`), with a cap on IDs per request.",
+      "why": "Wallets check every token a user holds. One request per contract is slow for them and wasteful for the server.",
+      "acceptance_criteria": [
+        "Design approved before coding; the response reuses existing summary shapes.",
+        "Every ID is validated as a contract strkey before any query; unknown IDs are reported, not dropped silently.",
+        "The cap is enforced and documented; rate limiting counts the request fairly.",
+        "Tests cover mixed valid, unknown and invalid IDs."
+      ],
+      "guidance": [
+        "Contract ID validation already exists in the API package."
+      ],
+      "pointers": [
+        "internal/api/catalog.go",
+        "internal/store/catalog.go",
+        "docs/api.md"
+      ],
+      "existing_issue": 114
+    },
+    {
+      "title": "feat(cli): inspect a local Wasm file without a database",
+      "complexity": "high",
+      "area": "cli",
+      "description": "Add `sep47idx inspect <file.wasm>` that runs the parser, claim sources and matcher on a local file and prints the declaration, anomalies and interface verdict with the missing/mismatched evidence, with `--json`.",
+      "why": "Contract authors want to check their build before deploying. Today they must deploy, wait for the index, then look up the hash.",
+      "acceptance_criteria": [
+        "Works offline, needs no database or RPC, and applies the same limits as the indexer.",
+        "Output matches what `sep47idx wasm` would show for the same code after indexing (tested with fixtures).",
+        "Exit codes: 0 for analysed, 1 for errors, with an optional flag to exit non-zero unless a given SEP matches.",
+        "`docs/contract-authors.md` uses it instead of the deploy-then-query flow."
+      ],
+      "guidance": [
+        "Reuse `internal/ingest/analyze.go` so results cannot drift from the indexer."
+      ],
+      "pointers": [
+        "internal/ingest/analyze.go",
+        "cmd/sep47idx/cmd_wasm_detail.go",
+        "docs/contract-authors.md"
+      ],
+      "existing_issue": 115
+    },
+    {
+      "title": "feat(cli): doctor command for index and environment checks",
+      "complexity": "high",
+      "area": "cli",
+      "description": "Add `sep47idx doctor` that checks the database (schema version, network passphrase, integrity quick check), the RPC (reachable, same network, latest ledger), lag, and disk space, and prints a pass/fail line for each.",
+      "why": "When something goes wrong, operators work through these checks by hand from the troubleshooting notes.",
+      "acceptance_criteria": [
+        "Each check prints a clear result and a fix suggestion; `--json` gives machine-readable output.",
+        "Exit code is non-zero if any check fails.",
+        "No check writes to the database.",
+        "Tests cover each failure with fixtures and a fake RPC."
+      ],
+      "guidance": [
+        "`stats --lag` already verifies the RPC network before reading the tip."
+      ],
+      "pointers": [
+        "cmd/sep47idx/cmd_stats.go",
+        "internal/store/store.go",
+        "internal/rpc/client.go"
+      ],
+      "existing_issue": 116
+    },
+    {
+      "title": "feat(cli): export the index as a CSV bundle with a manifest",
+      "complexity": "high",
+      "area": "cli",
+      "description": "Add `sep47idx export --out dir/` that writes contracts, versions, wasm, claims, anomalies and matches as CSV files, plus a manifest with network, `last_ledger`, schema, parser and ruleset versions and a SHA-256 per file.",
+      "why": "Researchers want the data in their own tools. A documented, checksummed bundle is reproducible evidence; ad-hoc SQL dumps are not.",
+      "acceptance_criteria": [
+        "Exports read one consistent snapshot of the database.",
+        "CSV columns are documented and stable; tiers stay in separate columns.",
+        "Large tables stream without loading into memory.",
+        "Tests verify the manifest checksums and that a re-export of an unchanged index is byte-identical."
+      ],
+      "guidance": [
+        "`cmd/sep47idx/cmd_query.go` already streams CSV."
+      ],
+      "pointers": [
+        "cmd/sep47idx/cmd_query.go",
+        "internal/store/catalog.go",
+        "docs/cli.md"
+      ],
+      "existing_issue": 117
+    },
+    {
+      "title": "feat(cli): diff two Wasm hashes",
+      "complexity": "high",
+      "area": "cli",
+      "description": "Add `sep47idx diff <hashA> <hashB>` that compares two stored Wasm: meta keys, declared SEPs and anomalies, functions added, removed or changed, and the interface verdict for each SEP.",
+      "why": "When a contract upgrades, the first question is what changed. History shows that it changed; diff shows how.",
+      "acceptance_criteria": [
+        "Output groups changes by declaration, functions and verdicts; `--json` available.",
+        "Works with `contract <id> --history` hashes; missing hashes exit 2.",
+        "Uses stored `functions_json`; Wasm without it is reported as needing a re-fetch.",
+        "Tests use the token_full_sep and token_partial fixtures."
+      ],
+      "guidance": [
+        "`internal/store/wasm.go` reads everything needed."
+      ],
+      "pointers": [
+        "internal/store/wasm.go",
+        "cmd/sep47idx/cmd_wasm_detail.go",
+        "docs/cli.md"
+      ],
+      "existing_issue": 118
+    },
+    {
+      "title": "feat(cli): configuration file support for every command",
+      "complexity": "high",
+      "area": "cli",
+      "description": "Support a JSON config file (`--config` or `SEP47IDX_CONFIG`) for common and command flags, with precedence flags > env > file > defaults, documented and tested.",
+      "why": "Operators running sync and serve with many flags repeat them in scripts and unit files. A config file is easier to review and version.",
+      "acceptance_criteria": [
+        "Unknown keys are errors naming the key.",
+        "Precedence is tested for every common flag.",
+        "Secrets are not accepted from the file (RPC auth stays env-only) and this is documented.",
+        "No new dependency (standard `encoding/json`)."
+      ],
+      "guidance": [
+        "`internal/config/config.go` `ApplyEnv` already implements env precedence."
+      ],
+      "pointers": [
+        "internal/config/config.go",
+        "internal/config/config_test.go",
+        "docs/self-hosting.md"
+      ],
+      "existing_issue": 119
+    },
+    {
+      "title": "feat(cli): a GitHub Action that checks a contract's declared SEPs",
+      "complexity": "high",
+      "area": "cli",
+      "description": "Publish a composite GitHub Action in this repository that downloads a pinned `sep47idx` release, runs `sep47idx inspect` on a contract's built Wasm, and fails the job if a required SEP is not declared or not matched.",
+      "why": "The fastest way to raise declaration adoption is to make it a CI check in contract repositories.",
+      "acceptance_criteria": [
+        "The action verifies the release archive against `SHA256SUMS` before running it.",
+        "Inputs: Wasm path, required SEPs, strict or lenient parsing.",
+        "A workflow in this repo tests the action against the fixtures.",
+        "Documented in `docs/contract-authors.md` with a copy-paste example."
+      ],
+      "guidance": [
+        "Depends on the `inspect` command issue."
+      ],
+      "pointers": [
+        "docs/contract-authors.md",
+        ".github/workflows/ci.yml",
+        "scripts/build-release.sh"
+      ],
+      "existing_issue": 120
+    },
+    {
+      "title": "feat(cli): machine-readable errors and a documented error catalog",
+      "complexity": "high",
+      "area": "cli",
+      "description": "Give every command a `--json` error form (`{\"error\":{\"code\":...,\"message\":...}}`, matching the API), map every sentinel error to a stable code and exit status, and generate an error catalog page from the code.",
+      "why": "Scripts that call `sep47idx` can only grep stderr today. Stable codes make automation reliable.",
+      "acceptance_criteria": [
+        "Every sentinel error in the module has a code; unmapped errors are `internal`.",
+        "Exit codes stay 0/1/2 as CLAUDE.md §5.12 defines.",
+        "A test fails if a new sentinel is added without a code.",
+        "The catalog page is generated by a committed script and included in the docs site."
+      ],
+      "guidance": [
+        "Sentinels are defined per package (`ErrNotFound`, `ErrRetentionGap`, ...)."
+      ],
+      "pointers": [
+        "cmd/sep47idx/main.go",
+        "cmd/sep47idx/read.go",
+        "internal/sync/loop.go"
+      ],
+      "existing_issue": 121
+    },
+    {
+      "title": "feat(cli): outreach report for undeclared interfaces",
+      "complexity": "high",
+      "area": "cli",
+      "description": "Add `sep47idx gap --outreach` that, for each undeclared-gap Wasm, prints the contracts using it, the exact `contractmeta!(key = \"sep\", val = \"41\")` line to add, and a pull-request template, as Markdown or JSON.",
+      "why": "The adoption decision rule makes outreach part of the project. Turning the gap into ready-to-send suggestions makes that work concrete.",
+      "acceptance_criteria": [
+        "Output is labelled inferred throughout, never presented as a claim.",
+        "Groups by Wasm hash, sorted by contract count.",
+        "The template is reviewed text committed in the repo, not generated prose.",
+        "Tests use a fixture index; documented in `docs/contract-authors.md`."
+      ],
+      "guidance": [
+        "`internal/store/gap.go` already computes the undeclared gap with pagination."
+      ],
+      "pointers": [
+        "internal/store/gap.go",
+        "cmd/sep47idx/cmd_gap.go",
+        "docs/contract-authors.md"
+      ],
+      "existing_issue": 122
+    },
+    {
+      "title": "feat(cli): validate a seed file against the RPC before syncing",
+      "complexity": "high",
+      "area": "cli",
+      "description": "Add `sep47idx seed --check <file>` that reads a seed CSV, reports invalid IDs, duplicates, missing and archived instances, and executable kinds, without writing a database.",
+      "why": "A bad Hubble export is only discovered partway through a long seed. Checking first saves hours and makes counts explainable.",
+      "acceptance_criteria": [
+        "Reads instances in batches with the existing RPC client and limits.",
+        "Prints totals that match what `sync --seed` would store (tested on a fixture seed).",
+        "Exit code non-zero for invalid rows; JSON output available.",
+        "Documented in `docs/self-hosting.md`."
+      ],
+      "guidance": [
+        "`internal/ingest/seed.go` parses seeds and reads instances."
+      ],
+      "pointers": [
+        "internal/ingest/seed.go",
+        "cmd/sep47idx/cmd_sync.go",
+        "docs/self-hosting.md"
+      ],
+      "existing_issue": 123
+    },
+    {
+      "title": "feat(phase0): toolchain census and declaration rate by SDK version",
+      "complexity": "high",
+      "area": "reports",
+      "description": "Extend the adoption report with the distribution of `rsver`, `rssdkver` and `cliver` across Wasm, and the declare rate and SEP-41 match rate per SDK version.",
+      "why": "If declarations correlate with SDK versions, outreach should target that SDK's documentation rather than individual contracts.",
+      "acceptance_criteria": [
+        "Numbers come from stored meta, weighted by unique hash and by contract.",
+        "Missing toolchain meta is its own bucket.",
+        "ADOPTION.md gains a section produced by the generator, never hand-edited.",
+        "Tests on a fixture index assert the section's numbers."
+      ],
+      "guidance": [
+        "`internal/phase0/markdown.go` renders ADOPTION.md."
+      ],
+      "pointers": [
+        "internal/phase0/report.go",
+        "internal/phase0/markdown.go",
+        "report/ADOPTION.md"
+      ],
+      "existing_issue": 124
+    },
+    {
+      "title": "feat(phase0): factory deployment analysis",
+      "complexity": "high",
+      "area": "reports",
+      "description": "Add a report section listing the Wasm hashes used by the most contracts, with their declared SEPs, SEP-41 status and share of all contracts, and explain how factories skew per-contract numbers.",
+      "why": "The census showed per-contract and per-hash rates differ by orders of magnitude (0.01% vs 0.60%). Showing the top factories explains why.",
+      "acceptance_criteria": [
+        "Top N hashes by contract count, with N configurable.",
+        "Each row shows declared SEPs, inferred status and contract count.",
+        "Generated into ADOPTION.md; tested on a fixture index.",
+        "No contract or hash is labelled with a project name unless that name comes from on-chain data."
+      ],
+      "guidance": [
+        "Per-hash and per-contract totals already exist in `internal/phase0/report.go`."
+      ],
+      "pointers": [
+        "internal/phase0/report.go",
+        "internal/phase0/markdown.go",
+        "report/ADOPTION.md"
+      ],
+      "existing_issue": 125
+    },
+    {
+      "title": "feat(phase0): declared-versus-inferred disagreement section",
+      "complexity": "high",
+      "area": "reports",
+      "description": "Add an ADOPTION.md section counting Wasm that declare SEP-41 but do not match its interface (partial, mismatch, no_spec), with examples, separate from the undeclared gap.",
+      "why": "A declaration that the interface contradicts is the most important thing the index can show integrators. The report counts the opposite gap but not this one.",
+      "acceptance_criteria": [
+        "Counts by status, weighted by hash and by contract.",
+        "Examples list hashes with their missing or mismatched functions.",
+        "Tiers stay separate in wording: declared claims versus inferred results.",
+        "Tested on fixtures (`not_token.wasm` falsely declares SEP-41)."
+      ],
+      "guidance": [
+        "`not_token.wasm` and `token_partial.wasm` are the fixture cases."
+      ],
+      "pointers": [
+        "internal/phase0/report.go",
+        "internal/phase0/markdown.go",
+        "testdata/contracts/README.md"
+      ],
+      "existing_issue": 126
+    },
+    {
+      "title": "feat(phase0): automate the Hubble census with a cost guard",
+      "complexity": "high",
+      "area": "reports",
+      "description": "Write a script that runs `scripts/hubble-export.sql` with `bq`, first doing a dry run to report bytes scanned and refusing to run above a configured limit, then writes the CSVs `phase0` expects.",
+      "why": "The mainnet census depends on someone running BigQuery by hand. Automating it, with a cost limit, makes the monthly report regeneration in MAINTAINING.md realistic.",
+      "acceptance_criteria": [
+        "The dry run prints estimated bytes and cost; the real run needs an explicit flag.",
+        "Output CSVs match the documented columns; row counts are printed.",
+        "Credentials come from the operator's gcloud setup and are never written to the repo.",
+        "Documented in `report/README.md`."
+      ],
+      "guidance": [
+        "The SQL already uses column pruning and partition bounds."
+      ],
+      "pointers": [
+        "scripts/hubble-export.sql",
+        "report/README.md",
+        "cmd/sep47idx/cmd_phase0.go"
+      ],
+      "existing_issue": 127
+    },
+    {
+      "title": "feat(phase0): full testnet census across the retention window",
+      "complexity": "high",
+      "area": "reports",
+      "description": "Replace the 2,000-contract testnet sample with an option to census every contract instance created or updated within the RPC retention window, with the sample kept as a fallback.",
+      "why": "Testnet has no Hubble coverage, so its numbers carry confidence intervals. A census removes them when the window allows.",
+      "acceptance_criteria": [
+        "Scans the window with `getLedgers`, tolerating the window moving during the scan (the recovery logic already exists).",
+        "Reports census versus sample clearly in ADOPTION.md, with the Wilson interval only for samples.",
+        "Bounded memory for large windows.",
+        "Tests use recorded ledgers and a fake RPC."
+      ],
+      "guidance": [
+        "`internal/phase0/sample.go` holds the sampler and window recovery."
+      ],
+      "pointers": [
+        "internal/phase0/sample.go",
+        "internal/phase0/run.go",
+        "report/ADOPTION.md"
+      ],
+      "existing_issue": 128
+    },
+    {
+      "title": "feat(docs): static adoption page generated from an index",
+      "complexity": "high",
+      "area": "reports",
+      "description": "Generate a static HTML adoption page (no JavaScript framework) from an index database or the Phase 0 summary JSON, and publish it with the docs site.",
+      "why": "CLAUDE.md lists \"a static adoption page generated from data\" as a deliverable. Today ADOPTION.md is Markdown only.",
+      "acceptance_criteria": [
+        "Every number on the page comes from the summary JSON, with the date and ledger shown.",
+        "Accessible: tables alongside any chart, readable without scripts.",
+        "Built by the docs workflow; a broken input fails the build.",
+        "Tests check the generator output against a fixture summary."
+      ],
+      "guidance": [
+        "Coordinate with the charts issue (Soroban-CII/soroindex#30)."
+      ],
+      "pointers": [
+        "internal/phase0/markdown.go",
+        ".github/workflows/docs.yml",
+        "mkdocs.yml"
+      ],
+      "existing_issue": 129
+    },
+    {
+      "title": "feat(phase0): Wasm age cohorts",
+      "complexity": "high",
+      "area": "reports",
+      "description": "Group Wasm by `first_seen_ledger` into cohorts (for example per 30 days) and report declaration and SEP-41 match rates per cohort.",
+      "why": "Whether new contracts declare more often than old ones is the clearest signal of adoption growth.",
+      "acceptance_criteria": [
+        "Cohort size is configurable; ledger numbers are converted to dates only for display.",
+        "Seeded Wasm without a known first-seen ledger is reported separately, not assigned a cohort.",
+        "Generated into ADOPTION.md; tested on a fixture index.",
+        "Explains the method and its limits in the report."
+      ],
+      "guidance": [
+        "`wasm.first_seen_ledger` is stored by sync; seeds may leave it unknown."
+      ],
+      "pointers": [
+        "internal/phase0/report.go",
+        "internal/store/totals.go",
+        "report/ADOPTION.md"
+      ],
+      "existing_issue": 130
+    },
+    {
+      "title": "feat(phase0): CAP-85 executable-reference report",
+      "complexity": "high",
+      "area": "reports",
+      "description": "Report executable references: how many owners and tags exist, how many contracts each reference upgrades at once, how many are unresolved or archived, and their declared and inferred interfaces.",
+      "why": "One reference update can upgrade thousands of contracts. Showing fan-out sizes tells integrators where a single change has the widest effect.",
+      "acceptance_criteria": [
+        "Counts come from `exec_refs` and `wasm_ref` contracts.",
+        "Unresolved references are counted, never dropped.",
+        "Generated into ADOPTION.md; tested on a fixture index with references.",
+        "No reference is labelled with a project name unless it comes from on-chain data."
+      ],
+      "guidance": [
+        "`exec_refs` and `idx_contracts_ref` hold the data."
+      ],
+      "pointers": [
+        "internal/phase0/report.go",
+        "migrations/0001_init.sql",
+        "report/ADOPTION.md"
+      ],
+      "existing_issue": 131
+    },
+    {
+      "title": "ci(phase0): monthly adoption report automation",
+      "complexity": "high",
+      "area": "reports",
+      "description": "Add a scheduled workflow that regenerates the testnet adoption report monthly and opens a pull request with the updated `report/` files and a summary of what changed.",
+      "why": "MAINTAINING.md asks for monthly report regeneration. A workflow makes it happen and keeps the history reviewable.",
+      "acceptance_criteria": [
+        "Runs on a schedule and manually; never pushes to `main` directly.",
+        "The PR body lists headline numbers before and after.",
+        "Fails clearly if the RPC is unavailable, without opening an empty PR.",
+        "Actions pinned to SHAs; permissions limited to what is needed."
+      ],
+      "guidance": [
+        "Mainnet needs the Hubble export; start with testnet."
+      ],
+      "pointers": [
+        "internal/phase0/run.go",
+        "MAINTAINING.md",
+        ".github/workflows/integration.yml"
+      ],
+      "existing_issue": 132
+    },
+    {
+      "title": "ci(repo): verify tagged release builds are reproducible",
+      "complexity": "high",
+      "area": "tooling",
+      "description": "Add a job to the release workflow that rebuilds the archives in a second, independent job and fails if its `SHA256SUMS` differs from the first build's.",
+      "why": "The v0.1.0 archives could not be reproduced because they were built before the tag existed. Tags built by the workflow should be checked for reproducibility automatically.",
+      "acceptance_criteria": [
+        "Two jobs build from the same tag on fresh runners; their checksums must match.",
+        "A mismatch prints each differing file and the `go version -m` difference.",
+        "Documented in `docs/self-hosting.md` with how users can reproduce locally.",
+        "Actions pinned to SHAs."
+      ],
+      "guidance": [
+        "`.github/workflows/release.yml` and `scripts/build-release.sh` are the starting point."
+      ],
+      "pointers": [
+        ".github/workflows/release.yml",
+        "scripts/build-release.sh",
+        "scripts/package_release.py"
+      ],
+      "existing_issue": 133
+    },
+    {
+      "title": "ci(repo): nightly long fuzz runs with corpus caching",
+      "complexity": "high",
+      "area": "tooling",
+      "description": "Add a scheduled workflow that runs each fuzz target for a longer time, caches the generated corpus between runs, and uploads any crasher as an artifact and opens an issue.",
+      "why": "`fuzz-smoke` runs 30 seconds per target. Fuzzing finds most bugs only after hours of accumulated corpus.",
+      "acceptance_criteria": [
+        "Each target runs for a configured duration; the corpus persists in the Actions cache.",
+        "A crash fails the job, uploads the input, and is reproducible with the printed command.",
+        "Not a required PR check.",
+        "Actions pinned to SHAs; least-privilege permissions."
+      ],
+      "guidance": [
+        "Targets are listed in `pkg/sepmeta/fuzz_test.go` and the Makefile."
+      ],
+      "pointers": [
+        "pkg/sepmeta/fuzz_test.go",
+        "Makefile",
+        ".github/workflows/ci.yml"
+      ],
+      "existing_issue": 134
+    },
+    {
+      "title": "ci(repo): coverage reporting with per-package thresholds",
+      "complexity": "high",
+      "area": "tooling",
+      "description": "Collect coverage in CI, publish a per-package summary in the job output, and fail when a package drops below a committed threshold.",
+      "why": "There is no coverage number for this project today, so untested code paths are invisible in review.",
+      "acceptance_criteria": [
+        "Thresholds per package are committed and start at current values (measured in the PR).",
+        "The summary lists each package's coverage.",
+        "No third-party service or token is required.",
+        "Documented in CONTRIBUTING.md."
+      ],
+      "guidance": [
+        "`go test -coverprofile` and `go tool cover -func` are enough."
+      ],
+      "pointers": [
+        ".github/workflows/ci.yml",
+        "Makefile",
+        "CONTRIBUTING.md"
+      ],
+      "existing_issue": 135
+    },
+    {
+      "title": "ci(repo): OpenSSF Scorecard and fixes for its findings",
+      "complexity": "high",
+      "area": "tooling",
+      "description": "Add the OpenSSF Scorecard workflow with pinned actions, review its findings, and fix the ones that apply (token permissions, pinned dependencies, branch protection documentation).",
+      "why": "Scorecard checks the supply-chain practices this project already claims. Running it turns those claims into a public, checked score.",
+      "acceptance_criteria": [
+        "The workflow runs on schedule and on `main` pushes with read-only permissions where possible.",
+        "Each finding is fixed or documented with a reason in `docs/dependency-review.md`.",
+        "The README shows the score badge only once the workflow passes.",
+        "Actions pinned to SHAs."
+      ],
+      "guidance": [
+        "Existing workflows already pin actions; check the rest of the findings."
+      ],
+      "pointers": [
+        ".github/workflows/security.yml",
+        "docs/dependency-review.md",
+        "README.md"
+      ],
+      "existing_issue": 136
+    },
+    {
+      "title": "feat(deploy): docker-compose stack for sync and serve",
+      "complexity": "high",
+      "area": "tooling",
+      "description": "Add a `compose.yaml` that runs `sync --follow` and `serve` against a shared volume, with health checks, restart policies and read-only root filesystems, and a CI job that starts it against a fake RPC and queries the API.",
+      "why": "Self-hosting today means wiring two containers by hand from the docs.",
+      "acceptance_criteria": [
+        "The API container mounts the database read-only.",
+        "Health checks use `/v1/health`; startup order handles an empty index.",
+        "The CI test runs offline against a recorded RPC server.",
+        "Documented in `docs/self-hosting.md`."
+      ],
+      "guidance": [
+        "The image already runs as UID 65532 with a read-only root."
+      ],
+      "pointers": [
+        "Dockerfile",
+        "docs/self-hosting.md",
+        ".github/workflows/integration.yml"
+      ],
+      "existing_issue": 137
+    },
+    {
+      "title": "test(sync): 24-hour testnet soak run with lag and memory limits",
+      "complexity": "high",
+      "area": "tooling",
+      "description": "Add a manually triggered (and optionally weekly) workflow that follows testnet for 24 hours and records lag over time and peak memory, failing if lag exceeds a limit or memory keeps growing.",
+      "why": "The nightly job follows for 30 minutes. Leaks and slow drift only show over much longer runs.",
+      "acceptance_criteria": [
+        "Records lag samples and RSS over time as an artifact.",
+        "Fails on lag above a configured limit or sustained memory growth.",
+        "Stays within GitHub Actions job time limits (split into segments if needed).",
+        "Results summarised in MAINTAINING.md."
+      ],
+      "guidance": [
+        "Reuse `TestFollowTestnet30Minutes` with a duration parameter."
+      ],
+      "pointers": [
+        "internal/sync/integration_test.go",
+        ".github/workflows/integration.yml",
+        "MAINTAINING.md"
+      ],
+      "existing_issue": 138
+    },
+    {
+      "title": "feat(security): configurable Wasm and XDR limits with validated bounds",
+      "complexity": "high",
+      "area": "security",
+      "description": "Expose the parser and XDR limits (total Wasm size, per-section size, section count, XDR depth and base64 length) as flags and env vars, validate them against hard upper bounds, and record the limits used in `sync_state`.",
+      "why": "CLAUDE.md says the limits are configurable, but they are fixed in code. Operators indexing unusual networks may need to raise them safely.",
+      "acceptance_criteria": [
+        "Each limit has a flag, env var and documented default; values above a hard cap are rejected at startup.",
+        "The limits in effect are stored and shown in `stats`.",
+        "Tests cover validation and that a raised limit lets a large fixture through.",
+        "`docs/self-hosting.md` documents the security trade-off."
+      ],
+      "guidance": [
+        "`sepmeta.DefaultLimits` and `ingest.XDRLimits` hold the current values."
+      ],
+      "pointers": [
+        "pkg/sepmeta/wasm.go",
+        "internal/ingest/instance.go",
+        "internal/config/config.go"
+      ],
+      "existing_issue": 139
+    },
+    {
+      "title": "test(security): bound RPC response sizes and JSON decoding",
+      "complexity": "high",
+      "area": "security",
+      "description": "Audit and test how the RPC client handles oversized, deeply nested or slow responses: cap response body size, reject excessive nesting, and time out slow bodies, with tests against a hostile fake server.",
+      "why": "Wasm and XDR are bounded carefully, but the JSON around them comes from the same untrusted provider.",
+      "acceptance_criteria": [
+        "Response bodies above a configured cap fail with a clear error before full allocation.",
+        "Tests cover huge bodies, deep nesting, slow trickle and invalid UTF-8.",
+        "Retries do not multiply the memory cost.",
+        "Findings and limits are documented in SECURITY.md scope notes."
+      ],
+      "guidance": [
+        "`internal/rpc/client.go` reads every response."
+      ],
+      "pointers": [
+        "internal/rpc/client.go",
+        "internal/rpc/client_test.go",
+        "SECURITY.md"
+      ],
+      "existing_issue": 140
+    },
+    {
+      "title": "docs(security): threat model",
+      "complexity": "high",
+      "area": "security",
+      "description": "Write a threat model covering untrusted Wasm and XDR, RPC provider trust, the public read-only API, the release pipeline and the verified tier's subprocess, with each mitigation linked to the code or test that enforces it.",
+      "why": "The project makes strong safety claims (never executes Wasm, bounds every length). A threat model shows how each claim is enforced and where the gaps are.",
+      "acceptance_criteria": [
+        "Each threat lists impact, mitigation and the enforcing code or test.",
+        "Gaps become linked issues rather than prose.",
+        "Reviewed against the current code, not the design document.",
+        "Added to the docs site and linked from SECURITY.md."
+      ],
+      "guidance": [
+        "Start from CLAUDE.md §4 and §5.1 and check each against the code."
+      ],
+      "pointers": [
+        "SECURITY.md",
+        "docs/how-it-works.md",
+        "mkdocs.yml"
+      ],
+      "existing_issue": 141
+    },
+    {
+      "title": "docs: end-to-end tutorial \"find every SEP-41 token\"",
+      "complexity": "high",
+      "area": "docs",
+      "description": "Write a tutorial that goes from nothing to answering \"which testnet contracts implement SEP-41?\" with the CLI and the API, separating declared, inferred and protocol results, with every command and output captured from a real run.",
+      "why": "The docs explain each part, but nothing walks a new user through the main question the project exists to answer.",
+      "acceptance_criteria": [
+        "Every command was run; outputs are pasted with the date and ledger.",
+        "Explains why the declared, inferred and protocol counts differ, using the trust-tier definitions.",
+        "Works on a clean machine with the released binary.",
+        "Added to the docs site navigation."
+      ],
+      "guidance": [
+        "CLAUDE.md §5.14: every number comes from a real run, with a date."
+      ],
+      "pointers": [
+        "docs/index.md",
+        "docs/trust-tiers.md",
+        "mkdocs.yml"
+      ],
+      "existing_issue": 142
+    },
+    {
+      "title": "docs: troubleshooting guide for every error",
+      "complexity": "high",
+      "area": "docs",
+      "description": "Write a troubleshooting page that lists every sentinel error and common failure (retention gap, network mismatch, schema too new, RPC on another network, rate limiting, Protocol upgrade decode errors), each with a real reproduction, its message and the fix.",
+      "why": "Errors are precise but terse. Users hit the retention gap or a network mismatch and have to read the source to learn what to do.",
+      "acceptance_criteria": [
+        "Each entry shows the exact message from a real reproduction.",
+        "Fixes are concrete commands.",
+        "A test fails if a new sentinel is added without an entry (or the error catalog issue provides that).",
+        "Linked from error messages where practical."
+      ],
+      "guidance": [
+        "Sentinels live in `internal/store/store.go`, `internal/sync/loop.go` and others."
+      ],
+      "pointers": [
+        "internal/store/store.go",
+        "internal/sync/loop.go",
+        "mkdocs.yml"
+      ],
+      "existing_issue": 143
+    },
+    {
+      "title": "test(e2e): offline end-to-end test of sync, serve and every endpoint",
+      "complexity": "high",
+      "area": "api",
+      "description": "Add an end-to-end test that runs the real `sep47idx sync` against a recorded fake RPC, then starts `serve` on the resulting database and calls every endpoint, asserting the full pipeline's output.",
+      "why": "Each layer has unit tests, but nothing proves the built binary works end to end without the network.",
+      "acceptance_criteria": [
+        "Runs the compiled binary, not internal functions.",
+        "Covers seeding, incremental sync with an upgrade, and every `/v1` endpoint.",
+        "Runs offline in under two minutes in CI.",
+        "Failures print the command, exit code and output."
+      ],
+      "guidance": [
+        "`cmd/sep47idx/cmd_sync_test.go` and `cmd_serve_test.go` have the fake RPC and server pieces."
+      ],
+      "pointers": [
+        "cmd/sep47idx/cmd_sync_test.go",
+        "cmd/sep47idx/cmd_serve_test.go",
+        "internal/rpc/testdata/README.md"
+      ],
+      "existing_issue": 144
+    },
+    {
+      "title": "docs(rules): calibrate the partial threshold from census data",
+      "complexity": "medium",
+      "area": "rules",
+      "description": "Recompute the SEP-41 status distribution for thresholds from 0.3 to 0.8 over the census's OK-count histogram, and write a decision record on whether 0.5 should stay.",
+      "why": "CLAUDE.md asked for the OK-count distribution so the operator could tune `match.partial_threshold`. The data exists; the decision was never written down.",
+      "acceptance_criteria": [
+        "A table shows match/partial/mismatch counts for each threshold, from the committed census data.",
+        "The record recommends a value with reasons and is linked from `docs/rule-files.md`.",
+        "No code change unless the record recommends one, in a separate PR."
+      ],
+      "guidance": [
+        "The OK-count histogram is in `report/mainnet-summary.json`."
+      ],
+      "pointers": [
+        "report/mainnet-summary.json",
+        "internal/match/match.go",
+        "docs/rule-files.md"
+      ],
+      "existing_issue": 145
+    },
+    {
+      "title": "docs: architecture page with diagrams",
+      "complexity": "medium",
+      "area": "docs",
+      "description": "Add an architecture page with diagrams of the data flow (RPC → ingest → store → API/CLI), the sync loop and batch transaction, and CAP-85 reference fan-out.",
+      "why": "`how-it-works.md` is prose. Diagrams make the batch and upgrade model clear to new contributors.",
+      "acceptance_criteria": [
+        "Diagrams are text-based (Mermaid or SVG committed with source) so they can be reviewed in diffs.",
+        "Each diagram is checked against the code it describes.",
+        "Linked from the docs navigation and CONTRIBUTING.md."
+      ],
+      "guidance": [
+        "MkDocs Material renders Mermaid without new Python packages beyond the pinned ones; confirm before adding any."
+      ],
+      "pointers": [
+        "docs/how-it-works.md",
+        "mkdocs.yml",
+        "docs/requirements.txt"
+      ],
+      "existing_issue": 146
+    },
+    {
+      "title": "ci(release): preflight GHCR permissions and document package setup",
+      "complexity": "medium",
+      "area": "tooling",
+      "description": "The first `release` run built and tested the image but GHCR refused the final push (`denied`). Add a preflight step that checks registry write access before building, and document the organization package settings required.",
+      "why": "A release that fails after ten minutes of building, at the last step, wastes time and hides the real cause.",
+      "acceptance_criteria": [
+        "The preflight fails fast with a message pointing to the package settings.",
+        "`docs/self-hosting.md` documents the required organization and package permissions.",
+        "A successful run on `v0.1.0` (manual dispatch) is linked in the PR."
+      ],
+      "guidance": [
+        "See run 42601217730 in the Actions history for the failure."
+      ],
+      "pointers": [
+        ".github/workflows/release.yml",
+        "docs/self-hosting.md",
+        "CONTRIBUTING.md"
+      ],
+      "existing_issue": 147
+    },
+    {
+      "title": "feat(api): configurable CORS allowed origins",
+      "complexity": "medium",
+      "area": "api",
+      "description": "CORS sends `Access-Control-Allow-Origin: *` unconditionally. Add a flag for an allow-list of origins (default stays `*` for the public read-only API), and handle preflight `OPTIONS` requests correctly.",
+      "why": "Some deployments need to restrict browser access; others need correct preflight handling for custom headers like `If-None-Match`.",
+      "acceptance_criteria": [
+        "Default behaviour is unchanged.",
+        "With an allow-list, only listed origins get the header, and `Vary: Origin` is set.",
+        "Preflight requests get the right headers and no body; tests cover each case."
+      ],
+      "guidance": [
+        "`internal/api/server.go` sets the header today."
+      ],
+      "pointers": [
+        "internal/api/server.go",
+        "cmd/sep47idx/cmd_serve.go",
+        "docs/api.md"
+      ],
+      "existing_issue": 148
+    },
+    {
+      "title": "docs(api): /v1 compatibility and deprecation policy",
+      "complexity": "medium",
+      "area": "docs",
+      "description": "Write the policy for what may change in `/v1` (adding fields, adding endpoints) and what may not (removing or renaming fields, changing tier semantics), and the deprecation process for anything that must change.",
+      "why": "Integrators need to know what they can rely on. CLAUDE.md fixes the response shapes internally but nothing tells users.",
+      "acceptance_criteria": [
+        "Lists allowed and breaking changes with examples.",
+        "Defines how deprecations are announced (CHANGELOG, headers, minimum notice).",
+        "Linked from `docs/api.md` and the README."
+      ],
+      "guidance": [
+        "CLAUDE.md §5.11 is the internal source of truth."
+      ],
+      "pointers": [
+        "docs/api.md",
+        "CHANGELOG.md",
+        "README.md"
+      ],
+      "existing_issue": 149
+    },
+    {
+      "title": "feat(api): gzip response compression",
+      "complexity": "medium",
+      "area": "api",
+      "description": "Compress JSON responses with gzip when the client sends `Accept-Encoding: gzip`, using only the standard library, with a minimum size threshold.",
+      "why": "Contract history and wasm detail responses can be large and compress well. Compression cuts bandwidth for public deployments.",
+      "acceptance_criteria": [
+        "Only responses above a threshold are compressed; `Vary: Accept-Encoding` is set.",
+        "Error responses and 304s work unchanged.",
+        "Tests decode compressed responses and check headers."
+      ],
+      "guidance": [
+        "Wrap the writer in `internal/api/server.go`; no new dependency."
+      ],
+      "pointers": [
+        "internal/api/server.go",
+        "internal/api/server_test.go",
+        "docs/api.md"
+      ],
+      "existing_issue": 150
+    },
+    {
+      "title": "feat(api): rate-limit response headers",
+      "complexity": "medium",
+      "area": "api",
+      "description": "When `--rate-limit` is set, return `RateLimit-Limit`, `RateLimit-Remaining` and `RateLimit-Reset` headers on every response, so clients can pace themselves before receiving 429.",
+      "why": "Clients only learn the limit by hitting it. Headers let well-behaved clients avoid errors.",
+      "acceptance_criteria": [
+        "Headers reflect the per-IP window accurately.",
+        "No headers when rate limiting is off.",
+        "Tests cover the countdown and reset."
+      ],
+      "guidance": [
+        "`internal/api/limit.go` holds the limiter."
+      ],
+      "pointers": [
+        "internal/api/limit.go",
+        "internal/api/limit_test.go",
+        "docs/api.md"
+      ],
+      "existing_issue": 151
+    },
+    {
+      "title": "docs(self-hosting): systemd units for sync and serve",
+      "complexity": "medium",
+      "area": "docs",
+      "description": "Add tested example systemd units for `sync --follow` and `serve`, with a dedicated user, read-only paths for the API, restart policy and resource limits, and document installation.",
+      "why": "Many operators run services with systemd rather than containers. Hardened examples prevent running the indexer as root.",
+      "acceptance_criteria": [
+        "Units use sandboxing options (ProtectSystem, NoNewPrivileges, ReadOnlyPaths for the API).",
+        "Tested on a Linux VM or container with systemd; the PR records how.",
+        "Documented in `docs/self-hosting.md`."
+      ],
+      "guidance": [
+        "The API only needs read access to the database."
+      ],
+      "pointers": [
+        "docs/self-hosting.md",
+        "cmd/sep47idx/cmd_serve.go",
+        "cmd/sep47idx/cmd_sync.go"
+      ],
+      "existing_issue": 152
+    },
+    {
+      "title": "docs(changelog): add Unreleased entries for post-release features",
+      "complexity": "trivial",
+      "area": "docs",
+      "description": "CHANGELOG.md has no entries for `stats --lag`, the `wasm` missing/mismatched lines, the release workflow, or the new tests merged in Soroban-CII/soroindex#38. Add an Unreleased section.",
+      "why": "The changelog is where users look for what changed since v0.1.0.",
+      "acceptance_criteria": [
+        "An `## Unreleased` section lists each user-visible change with its PR.",
+        "Entries follow the file's existing style."
+      ],
+      "guidance": [
+        "`git log v0.1.0..main` shows the merged changes."
+      ],
+      "pointers": [
+        "CHANGELOG.md"
+      ],
+      "existing_issue": 153
+    },
+    {
+      "title": "docs(repo): move internal stage reports to docs/archive",
+      "complexity": "trivial",
+      "area": "docs",
+      "description": "Move `docs/stage-*-checkpoint.md`, `docs/stage-f-progress.md`, `docs/release-readiness.md` and `docs/wave/README-COMPARISON.md` into `docs/archive/`, fix links to them, and link the archive from MAINTAINING.md.",
+      "why": "These are dated build records, not user docs. Mixed in with the guides they confuse new readers.",
+      "acceptance_criteria": [
+        "Files moved with `git mv` so history is kept.",
+        "Every link to them still resolves; `mkdocs build --strict` passes."
+      ],
+      "guidance": [
+        "Search the repo for each filename before moving."
+      ],
+      "pointers": [
+        "docs/stage-f-checkpoint.md",
+        "MAINTAINING.md",
+        "mkdocs.yml"
+      ],
+      "existing_issue": 154
+    },
+    {
+      "title": "feat(cli): version --json",
+      "complexity": "trivial",
+      "area": "cli",
+      "description": "Add `--json` to `sep47idx version`, printing version, Go version, OS/arch and parser version as JSON.",
+      "why": "Scripts and bug reports need the version in a parseable form.",
+      "acceptance_criteria": [
+        "Text output is unchanged; JSON output has stable keys.",
+        "A test asserts the JSON keys."
+      ],
+      "guidance": [
+        "`cmd/sep47idx/cmd_version.go` prints the text form."
+      ],
+      "pointers": [
+        "cmd/sep47idx/cmd_version.go",
+        "cmd/sep47idx/main_test.go"
+      ],
+      "existing_issue": 155
+    },
+    {
+      "title": "build(make): add a make check target",
+      "complexity": "trivial",
+      "area": "tooling",
+      "description": "Add `make check` that runs tidy-check, gofmt, vet, lint and test in the same order as CI.",
+      "why": "Contributors should be able to run what CI runs with one command before pushing.",
+      "acceptance_criteria": [
+        "`make check` fails on the first failing step with its output.",
+        "CONTRIBUTING.md mentions it."
+      ],
+      "guidance": [
+        "The Makefile already has the individual targets."
+      ],
+      "pointers": [
+        "Makefile",
+        "CONTRIBUTING.md"
+      ],
+      "existing_issue": 156
+    },
+    {
+      "title": "chore(repo): add CITATION.cff",
+      "complexity": "trivial",
+      "area": "docs",
+      "description": "Add a `CITATION.cff` so researchers citing the adoption data can cite the software correctly.",
+      "why": "The census numbers are research data; GitHub shows a citation button when the file exists.",
+      "acceptance_criteria": [
+        "Valid CFF 1.2 with title, authors (maintainers as listed in README), license and repository URL.",
+        "Validated with a CFF validator; the PR states which."
+      ],
+      "guidance": [
+        "Use the maintainers listed in README.md."
+      ],
+      "pointers": [
+        "README.md",
+        "LICENSE"
+      ],
+      "existing_issue": 157
+    },
+    {
+      "title": "chore(repo): add .editorconfig",
+      "complexity": "trivial",
+      "area": "tooling",
+      "description": "Add an `.editorconfig` matching the repository's conventions: tabs for Go and Makefiles, two spaces for YAML and JSON, LF line endings, final newline.",
+      "why": "Contributors' editors would match the existing formatting without manual setup.",
+      "acceptance_criteria": [
+        "Settings match existing files (checked on a sample of each type).",
+        "No existing file needs reformatting."
+      ],
+      "guidance": [
+        "Look at `.golangci.yml`, `mkdocs.yml` and `rules/*.json` for the current style."
+      ],
+      "pointers": [
+        "Makefile",
+        "mkdocs.yml"
+      ],
+      "existing_issue": 158
+    },
+    {
+      "title": "test(config): every flag overrides its environment variable",
+      "complexity": "trivial",
+      "area": "cli",
+      "description": "Add a table test asserting that for each common flag, the flag value wins over its `SEP47IDX_*` env var, and the env var wins over the default.",
+      "why": "CLAUDE.md §5.12 promises flags override env. Only some flags are tested.",
+      "acceptance_criteria": [
+        "One table row per common flag.",
+        "Fails if a new flag lacks env support."
+      ],
+      "guidance": [
+        "`internal/config/config.go` `RegisterCommon` lists the common flags."
+      ],
+      "pointers": [
+        "internal/config/config.go",
+        "internal/config/config_test.go"
+      ],
+      "existing_issue": 159
+    },
+    {
+      "title": "test(sepmeta): runnable example for Functions",
+      "complexity": "trivial",
+      "area": "parser",
+      "description": "Add `ExampleFunctions` reading a golden fixture's spec and printing its function signatures, with an `// Output:` block.",
+      "why": "`pkg/sepmeta` is a public package; `go doc` shows an example for `ParseSEP47` but none for rendering specs.",
+      "acceptance_criteria": [
+        "The example runs in `go test` and asserts its output.",
+        "Shows a nested type rendering."
+      ],
+      "guidance": [
+        "`pkg/sepmeta/example_test.go` has the existing examples."
+      ],
+      "pointers": [
+        "pkg/sepmeta/example_test.go",
+        "pkg/sepmeta/spec.go"
+      ],
+      "existing_issue": 160
+    },
+    {
+      "title": "test(sepmeta): runnable example for handling ErrLimit",
+      "complexity": "trivial",
+      "area": "parser",
+      "description": "Add an example showing `ReadCustomSections` rejecting an oversized module with `ErrLimit` and how a caller checks it with `errors.Is`.",
+      "why": "Library users need to know the limit errors exist and how to detect them.",
+      "acceptance_criteria": [
+        "The example runs in `go test` with an asserted output.",
+        "Uses a small in-memory module, not a large file."
+      ],
+      "guidance": [
+        "`ErrLimit` is defined in `pkg/sepmeta/wasm.go`."
+      ],
+      "pointers": [
+        "pkg/sepmeta/example_test.go",
+        "pkg/sepmeta/wasm.go"
+      ],
+      "existing_issue": 161
+    },
+    {
+      "title": "test(match): runnable example for Match",
+      "complexity": "trivial",
+      "area": "rules",
+      "description": "Add `ExampleMatch` in `internal/match` showing a partial match's status and missing functions.",
+      "why": "The matcher's result shape is easiest to understand from one concrete example.",
+      "acceptance_criteria": [
+        "The example asserts its output.",
+        "Uses the shipped SEP-41 rule file."
+      ],
+      "guidance": [
+        "`internal/match/match_test.go` shows how rule files are loaded in tests."
+      ],
+      "pointers": [
+        "internal/match/match.go",
+        "internal/match/match_test.go"
+      ],
+      "existing_issue": 162
+    },
+    {
+      "title": "docs(api): error code table",
+      "complexity": "trivial",
+      "area": "docs",
+      "description": "Add a table to `docs/api.md` listing each error `code` (`not_found`, `bad_request`, `rate_limited`, `internal`), its HTTP status, and when it is returned.",
+      "why": "Integrators need to map errors without reading handler code.",
+      "acceptance_criteria": [
+        "Every code and status used in `internal/api` is listed.",
+        "Each row has a real example request captured from a run."
+      ],
+      "guidance": [
+        "`writeError` calls in `internal/api` show every case."
+      ],
+      "pointers": [
+        "docs/api.md",
+        "internal/api/server.go"
+      ],
+      "existing_issue": 163
+    },
+    {
+      "title": "feat(cli): --version flag as an alias for version",
+      "complexity": "trivial",
+      "area": "cli",
+      "description": "Make `sep47idx --version` print the same output as `sep47idx version`.",
+      "why": "`--version` is the conventional way users check a CLI's version.",
+      "acceptance_criteria": [
+        "`sep47idx --version` exits 0 with the version line.",
+        "A test covers it."
+      ],
+      "guidance": [
+        "Argument dispatch is in `cmd/sep47idx/main.go`."
+      ],
+      "pointers": [
+        "cmd/sep47idx/main.go",
+        "cmd/sep47idx/main_test.go"
+      ],
+      "existing_issue": 164
+    },
+    {
+      "title": "docs: FAQ page",
+      "complexity": "trivial",
+      "area": "docs",
+      "description": "Add a FAQ page answering the questions new users ask: why declared and inferred counts differ, why SACs are \"protocol\", what archived means, why a contract shows no claims, how fresh the data is.",
+      "why": "These answers are spread across several pages.",
+      "acceptance_criteria": [
+        "Each answer links to the page with the full explanation.",
+        "Added to the docs navigation; `mkdocs build --strict` passes."
+      ],
+      "guidance": [
+        "Use the trust-tier definitions exactly as written in `docs/trust-tiers.md`."
+      ],
+      "pointers": [
+        "docs/trust-tiers.md",
+        "mkdocs.yml"
+      ],
+      "existing_issue": 165
+    },
+    {
+      "title": "test(sepmeta): vectors for ASCII control whitespace around tokens",
+      "complexity": "trivial",
+      "area": "parser",
+      "description": "Add vectors with tabs, newlines and carriage returns around tokens (`\"\\t41\"`, `\"41\\n,46\"`), with lenient and strict golden JSON.",
+      "why": "SEP-47 says to trim whitespace; spaces are tested, other ASCII whitespace is not.",
+      "acceptance_criteria": [
+        "Golden JSON for both modes, generated with `-update` and reviewed.",
+        "`TestParseSEP47Rules` gains a matching hand-written case."
+      ],
+      "guidance": [
+        "See `testdata/vectors/` for the format."
+      ],
+      "pointers": [
+        "pkg/sepmeta/sep47.go",
+        "pkg/sepmeta/sep47_test.go"
+      ],
+      "existing_issue": 166
+    },
+    {
+      "title": "test(sepmeta): vectors for the six-digit boundary",
+      "complexity": "trivial",
+      "area": "parser",
+      "description": "Add vectors for `999999` (accepted) and `1000000` (oversized), in both modes.",
+      "why": "The seven-digit case is tested, but not the exact boundary.",
+      "acceptance_criteria": [
+        "Golden JSON for both values and both modes.",
+        "A hand-written case in `TestParseSEP47Rules`."
+      ],
+      "guidance": [
+        "The oversized rule is in `pkg/sepmeta/sep47.go`."
+      ],
+      "pointers": [
+        "pkg/sepmeta/sep47.go",
+        "pkg/sepmeta/sep47_test.go"
+      ],
+      "existing_issue": 167
+    },
+    {
+      "title": "build(make): add a make vuln target",
+      "complexity": "trivial",
+      "area": "tooling",
+      "description": "Add `make vuln` that runs the same pinned govulncheck version as `security.yml`.",
+      "why": "Contributors should be able to run the vulnerability scan locally before CI does.",
+      "acceptance_criteria": [
+        "Uses the version pinned in `.github/workflows/security.yml`.",
+        "Documented in CONTRIBUTING.md's make targets table."
+      ],
+      "guidance": [
+        "`GOVULNCHECK_VERSION` is set in the workflow."
+      ],
+      "pointers": [
+        "Makefile",
+        ".github/workflows/security.yml",
+        "CONTRIBUTING.md"
+      ],
+      "existing_issue": 168
+    },
+    {
+      "title": "docs(contributing): document the release workflow for maintainers",
+      "complexity": "trivial",
+      "area": "docs",
+      "description": "Document how to cut a release with `.github/workflows/release.yml`: tagging, reviewing the draft release, publishing the image, and making the package public.",
+      "why": "The release process exists only as workflow comments.",
+      "acceptance_criteria": [
+        "Step-by-step instructions in CONTRIBUTING.md or MAINTAINING.md.",
+        "Mentions the GHCR package permissions requirement."
+      ],
+      "guidance": [
+        "The workflow header comment summarises the behaviour."
+      ],
+      "pointers": [
+        ".github/workflows/release.yml",
+        "CONTRIBUTING.md"
+      ],
+      "existing_issue": 169
+    },
+    {
+      "title": "docs(cli): capture a real stats --lag run",
+      "complexity": "trivial",
+      "area": "docs",
+      "description": "`docs/cli.md` describes `stats --lag` without a captured example because it was written offline. Run it against a real index and paste the text and JSON output with the date.",
+      "why": "CLAUDE.md requires every command in the docs to show real output.",
+      "acceptance_criteria": [
+        "Text and `--json` outputs pasted from a real run, dated.",
+        "The command shown is exactly the one run."
+      ],
+      "guidance": [
+        "Any seeded testnet index works."
+      ],
+      "pointers": [
+        "docs/cli.md"
+      ],
+      "existing_issue": 170
+    },
+    {
+      "title": "docs(mkdocs): add the changelog to the docs site",
+      "complexity": "trivial",
+      "area": "docs",
+      "description": "Include CHANGELOG.md in the docs site navigation, the same way CONTRIBUTING.md is included.",
+      "why": "Docs readers have no way to see what changed between releases.",
+      "acceptance_criteria": [
+        "The page renders with working links.",
+        "`mkdocs build --strict` passes."
+      ],
+      "guidance": [
+        "`docs/contributing.md` shows how a root file is included."
+      ],
+      "pointers": [
+        "mkdocs.yml",
+        "docs/contributing.md",
+        "CHANGELOG.md"
+      ],
+      "existing_issue": 171
+    },
+    {
+      "title": "docs(api): capture real error responses",
+      "complexity": "trivial",
+      "area": "docs",
+      "description": "Add real captured `curl` requests and responses for a 400 (bad contract ID), a 404 (unknown contract) and a 429 (rate limit) to `docs/api.md`.",
+      "why": "The docs show successful responses only.",
+      "acceptance_criteria": [
+        "Each example was run against a local `serve`, with the date.",
+        "Bodies match the documented error shape."
+      ],
+      "guidance": [
+        "Run `serve --rate-limit 1` to reproduce a 429."
+      ],
+      "pointers": [
+        "docs/api.md",
+        "internal/api/limit.go"
+      ],
+      "existing_issue": 172
+    },
+    {
+      "title": "chore(repo): add CODEOWNERS for rules and migrations",
+      "complexity": "trivial",
+      "area": "tooling",
+      "description": "Add a `.github/CODEOWNERS` that requests maintainer review for `rules/`, `migrations/`, `.github/workflows/` and `pkg/sepmeta/`.",
+      "why": "Rule files, schema and workflows are the highest-risk paths; review should be requested automatically.",
+      "acceptance_criteria": [
+        "Owners are the maintainers listed in README.md.",
+        "GitHub shows no CODEOWNERS errors on the file."
+      ],
+      "guidance": [
+        "See GitHub's CODEOWNERS syntax documentation."
+      ],
+      "pointers": [
+        "README.md",
+        ".github/pull_request_template.md"
+      ],
+      "existing_issue": 173
+    },
+    {
+      "title": "chore(repo): add .gitattributes for binary fixtures and generated reports",
+      "complexity": "trivial",
+      "area": "tooling",
+      "description": "Mark `testdata/wasm/*.wasm` as binary and `report/*.csv` as generated (`linguist-generated`) so diffs and language statistics are accurate.",
+      "why": "Wasm fixtures show as unreadable diffs and report CSVs inflate the repository's language stats.",
+      "acceptance_criteria": [
+        "`git diff` treats Wasm as binary; GitHub collapses generated CSVs.",
+        "No file contents change."
+      ],
+      "guidance": [
+        "Check `git check-attr` output in the PR."
+      ],
+      "pointers": [
+        "report/README.md",
+        "testdata/contracts/README.md"
+      ],
+      "existing_issue": 174
+    },
+    {
+      "title": "docs(contract-authors): multi-crate projects",
+      "complexity": "trivial",
+      "area": "docs",
+      "description": "Add a section to `docs/contract-authors.md` for workspaces with several crates: each crate may add its own `contractmeta!` line, SEP-47 joins them, and `multi_sep.wasm` shows the result.",
+      "why": "Authors of multi-crate contracts ask whether repeated `sep` entries are an error. They are not, and the docs should say so.",
+      "acceptance_criteria": [
+        "Explains joining with the `multi_sep.wasm` fixture output.",
+        "Links to the SEP-47 text."
+      ],
+      "guidance": [
+        "`testdata/contracts/multi_sep/` is the example."
+      ],
+      "pointers": [
+        "docs/contract-authors.md",
+        "testdata/contracts/multi_sep/src/lib.rs"
+      ],
+      "existing_issue": 175
+    },
+    {
+      "title": "test(cli): every command accepts -h",
+      "complexity": "trivial",
+      "area": "cli",
+      "description": "Add a test that runs each registered command with `-h`, asserting exit code 0 and that every flag appears in the output.",
+      "why": "Help output is the first thing users read; a command that panics or exits 1 on `-h` is a bad first impression.",
+      "acceptance_criteria": [
+        "Covers every command in the registry automatically.",
+        "Fails if a command's help omits a flag."
+      ],
+      "guidance": [
+        "`TestAllBuiltCommandsAreRegistered` in `cmd/sep47idx/main_test.go` enumerates commands."
+      ],
+      "pointers": [
+        "cmd/sep47idx/main_test.go",
+        "cmd/sep47idx/main.go"
+      ],
+      "existing_issue": 176
+    },
+    {
+      "title": "docs(api): document cursor lifetime",
+      "complexity": "trivial",
+      "area": "docs",
+      "description": "Document that cursors are opaque, valid only for the same query and schema version, and should not be stored long-term.",
+      "why": "Clients store cursors and are surprised when an upgrade invalidates them.",
+      "acceptance_criteria": [
+        "`docs/api.md` has a short cursor section.",
+        "States what error an invalid cursor returns."
+      ],
+      "guidance": [
+        "`internal/store/pagination.go` defines the format."
+      ],
+      "pointers": [
+        "docs/api.md",
+        "internal/store/pagination.go"
+      ],
+      "existing_issue": 177
+    },
+    {
+      "title": "docs(trust-tiers): worked example of the undeclared gap",
+      "complexity": "trivial",
+      "area": "docs",
+      "description": "Add a worked example to `docs/trust-tiers.md` using `token_full_legacy.wasm`: it matches SEP-41 but declares nothing, so it appears in the inferred tier and the undeclared gap, never as a claim.",
+      "why": "The undeclared gap is the concept users misread most often.",
+      "acceptance_criteria": [
+        "Shows the real `sep47idx wasm` or `inspect` output for the fixture.",
+        "Uses the tier wording exactly as defined."
+      ],
+      "guidance": [
+        "The fixture is committed in `testdata/wasm/`."
+      ],
+      "pointers": [
+        "docs/trust-tiers.md",
+        "testdata/contracts/token_full_legacy/src/lib.rs"
+      ],
+      "existing_issue": 178
+    }
+  ]
+}
