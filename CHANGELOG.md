@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Version contract cursors and stamp them with the schema version, a ruleset
+  digest and a checksum. A cursor from another version returns a 400 telling the
+  client to restart paging; a tampered one returns `invalid cursor` (#107).
 - Add a strong `ETag` to every successful `/v1` GET and answer a matching
   `If-None-Match` with 304 (#104).
 - Assign each API request an `X-Request-ID`, write one structured access log line

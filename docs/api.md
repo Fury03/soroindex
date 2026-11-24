@@ -36,6 +36,25 @@ same filters; null means the end. Cursors are opaque base64url values. History
 cursors are scoped to the contract. Pagination observes current data on each
 request; it does not hold a snapshot across separate requests.
 
+### Cursor lifetime
+
+A `/v1/contracts`, `/v1/wasm/{hash}` and gap cursor is a keyset position (the
+last contract ID returned) stamped with the cursor format version, the database
+schema version of the binary that issued it, a digest of the loaded ruleset
+versions, and a checksum. It has no expiry time. While the index syncs, rows
+committed between requests never make a page repeat or skip a row that already
+existed when paging started: new contracts sort into place and appear only if
+they sort after the cursor.
+
+A cursor stops working when the binary is upgraded to a new schema or cursor
+format, or when a ruleset version changes. The server then answers `400` with
+code `bad_request` and the message `cursor is from another schema or ruleset
+version; restart paging without a cursor`. Drop the cursor and start again. An
+edited or malformed cursor, including one whose checksum fails, answers `400`
+with only `invalid cursor`. The checksum catches edits and corruption; it is not a
+secret, and a cursor holds nothing but a public contract ID. Contract history
+cursors have their own format and are not covered by this stamp.
+
 Inferred results use loaded rule versions. SACs belong to the protocol tier and
 never satisfy declared or inferred filters. Verified filtering requires a current
 hash, a declaration and the latest passing result. Old-code results remain in
