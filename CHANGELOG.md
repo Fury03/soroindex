@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Publish the container image as a linux/amd64 and linux/arm64 index, smoke-tested
+  per platform before push, with the index digest recorded (#50).
 - Version contract cursors and stamp them with the schema version, a ruleset
   digest and a checksum. A cursor from another version returns a 400 telling the
   client to restart paging; a tampered one returns `invalid cursor` (#107).

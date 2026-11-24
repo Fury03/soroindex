@@ -187,16 +187,43 @@ That is 27,772,533 bytes, about 26.5 MiB. Outside `/app/licenses`, the image
 holds only `/app/sep47idx` and an empty `/app/data`. It contains no database,
 no proxy settings and no CA bundle; `docker history` shows neither.
 
+## Multi-architecture images
+
+The `Dockerfile` builds for `linux/amd64` and `linux/arm64`. The build stage runs
+on the build host and cross-compiles the static binary with `GOOS`/`GOARCH` from
+BuildKit's `TARGETOS`/`TARGETARCH`, so arm64 does not compile under emulation.
+Both pinned base images (`golang:1.27.4-bookworm` and distroless
+`static-debian13:nonroot`) are digests of OCI image indexes. On 24 November 2026
+their manifest lists, read from the registries, included `linux/amd64` and
+`linux/arm64`.
+
+`scripts/smoke-image.sh IMAGE linux/arm64` checks one loaded platform: the image
+reports that OS and architecture and the user `65532:65532`, `version` names the
+platform, an empty index is created through a writable mount with
+`sync --recompute` (no RPC), and `stats --json` then reads it with a read-only
+root filesystem and a read-only database mount.
+
+The release workflow runs it for both platforms before it pushes anything. It
+then builds one index for both platforms, pushes it, checks that the index lists
+both, and records `ghcr.io/<owner>/soroindex@sha256:...` in the job summary and
+the `image-digest-<tag>` artifact. Local builds need `docker buildx` and, for
+arm64 on an amd64 host, QEMU binfmt support.
+
+Status: the smoke script and the workflow are written but no multi-arch image has
+been built or pushed from this change; the first run of the release workflow is
+the test. No digest is claimed here.
+
 ## Published images
 
 `.github/workflows/release.yml` builds and pushes `ghcr.io/soroban-cii/soroindex:<tag>`:
 
-- Pushing a `vN.N.N` tag builds the archives and the image, creates a **draft**
-  GitHub release for a maintainer to review, and pushes the image.
+- Pushing a `vN.N.N` tag builds the archives and the multi-arch image, creates a
+  **draft** GitHub release for a maintainer to review, and pushes the image.
 - For a release that already exists, such as v0.1.0, run it from
   **Actions → release → Run workflow** with the tag. It never replaces published
   assets. It reports whether the rebuilt archives match the published
-  `SHA256SUMS`, then pushes the image. v0.1.0's archives were built before the
+  `SHA256SUMS`, then pushes the image only if **publish** is ticked (unticked, it
+  builds and smoke-tests both platforms and publishes nothing). v0.1.0's archives were built before the
   tag existed, so Go stamped them with a pseudo-version
   (`v0.0.0-20261109093629-3abe5a30038d`), and a rebuild at the tag cannot match
   them byte for byte. `sep47idx version` reports `v0.1.0` in both.
