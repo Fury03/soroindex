@@ -15,7 +15,9 @@ import (
 // or none of it. Every write is idempotent: replaying a batch changes
 // nothing.
 type Tx struct {
-	tx *sql.Tx
+	tx      *sql.Tx
+	failAt  int // test-only: fail at the N-th exec call (1-based)
+	callNum int // test-only: counter for exec calls
 }
 
 // Begin starts a write transaction.
@@ -28,6 +30,19 @@ func (s *Store) Begin(ctx context.Context) (*Tx, error) {
 		return nil, fmt.Errorf("begin: %w", err)
 	}
 	return &Tx{tx: tx}, nil
+}
+
+// BeginWithFailAt starts a write transaction that will fail at the N-th
+// exec call. For test use only.
+func (s *Store) BeginWithFailAt(ctx context.Context, failAt int) (*Tx, error) {
+	if s.readOnly {
+		return nil, errors.New("store: read-only")
+	}
+	tx, err := s.DB.BeginTx(ctx, nil)
+	if err != nil {
+		return nil, fmt.Errorf("begin: %w", err)
+	}
+	return &Tx{tx: tx, failAt: failAt}, nil
 }
 
 // Commit commits the transaction.
@@ -43,6 +58,10 @@ func (t *Tx) Rollback() error {
 }
 
 func (t *Tx) exec(ctx context.Context, what, q string, args ...any) error {
+	t.callNum++
+	if t.failAt > 0 && t.callNum == t.failAt {
+		return fmt.Errorf("injected failure at exec #%d (%s)", t.failAt, what)
+	}
 	if _, err := t.tx.ExecContext(ctx, q, args...); err != nil {
 		return fmt.Errorf("%s: %w", what, err)
 	}
@@ -323,6 +342,14 @@ ON CONFLICT (owner_contract_id, tag) DO UPDATE SET
   archived = excluded.archived
 WHERE exec_refs.updated_ledger IS NULL OR excluded.updated_ledger IS NULL OR excluded.updated_ledger >= exec_refs.updated_ledger`,
 		owner, tag, nullStr(hash), nullLedger(ledger), archived)
+}
+
+// HasWasm on the store reads committed state outside any batch, so Wasm
+// prefetching can skip hashes already indexed before a transaction opens.
+func (s *Store) HasWasm(ctx context.Context, hash string) (bool, error) {
+	var n int
+	err := s.DB.QueryRowContext(ctx, `SELECT count(*) FROM wasm WHERE hash = ?`, hash).Scan(&n)
+	return n > 0, err
 }
 
 // HasWasm reports whether a Wasm row exists in any status, archived
