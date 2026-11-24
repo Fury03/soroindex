@@ -42,6 +42,30 @@ hash, a declaration and the latest passing result. Old-code results remain in
 history with `stale: true`. Never-run results are null. A pass means the suite's
 checks passed; it is not a security audit. No verifier execution ships in this build.
 
+## Conditional requests
+
+Every successful `GET` under `/v1` (and the `/contracts` alias) carries a strong
+`ETag`. It is a hash of the network, path, query string, the index's last synced
+ledger, the parser version and every loaded ruleset version, so it changes
+whenever the index advances or its rules change, and it is computed without
+hashing the body. Send it back as `If-None-Match`; a match returns `304 Not
+Modified` with no body. A weak form (`W/"..."`), a list of tags and `*` also match
+(the weak comparison RFC 9110 requires for `If-None-Match`); a stale, unquoted or
+malformed value gets a normal `200`.
+
+Error responses carry no `ETag`. `/v1/health` (it reports the live RPC tip) and
+`/v1/events/upgrades` (a stream) are not tagged.
+
+Captured from the test fixture server (`/v1/seps`, last ledger 100), not from
+testnet:
+
+```text
+GET /v1/seps
+200 OK  ETag: "1d50c2e12c44c5dea3ac67030014b428"  Content-Type: application/json  (232 bytes)
+GET /v1/seps  If-None-Match: "1d50c2e12c44c5dea3ac67030014b428"
+304 Not Modified  ETag: "1d50c2e12c44c5dea3ac67030014b428"  (0 bytes)
+```
+
 ## Bulk lookup
 
 `GET /v1/contracts?ids=C...,C...` returns the summaries of up to 100 contracts

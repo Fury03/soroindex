@@ -152,7 +152,12 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 15*time.Second)
 	defer cancel()
 	ctx = context.WithValue(ctx, backendKey{}, b)
-	s.mux.ServeHTTP(w, r.WithContext(ctx))
+	r = r.WithContext(ctx)
+	if etagEligible(r.URL.Path) {
+		s.serveTagged(w, r, b, s.mux)
+		return
+	}
+	s.mux.ServeHTTP(w, r)
 }
 
 func (s *Server) selectBackend(network string) (Backend, error) {
