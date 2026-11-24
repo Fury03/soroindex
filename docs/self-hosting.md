@@ -104,6 +104,36 @@ requires an explicit RPC URL and the RPC network must match the database.
 The [CLI reference](cli.md) records the tested start command. The [API reference](api.md)
 contains requests and responses from the real testnet seed.
 
+## Request logs and metrics
+
+`serve` gives every request an `X-Request-ID` response header (a random value;
+a client-supplied header is ignored) and writes one JSON access line to stderr
+with the request ID, method, route pattern, status and duration. The line never
+contains the query string (cursors can appear there) or a request body. Requests
+rejected before routing (unknown network, rate limit, wrong method) log the route
+`unmatched`.
+
+`--metrics` (off by default) serves request counts by route and status, and a
+latency histogram per route with fixed buckets (5 ms to 10 s), at `/metrics` in
+Prometheus text format. Routes are patterns such as `GET /v1/contracts/{id}`, so
+the label set stays bounded. `/metrics` is not rate limited and has no
+authentication: bind it to a private address or keep it behind your proxy.
+
+Captured from the fixture server in the test suite, not from a testnet run:
+
+```text
+{"level":"INFO","msg":"request","request_id":"8a6083e7092426c5","method":"GET","route":"GET /v1/stats","status":200,"duration_ms":1.411}
+# TYPE soroindex_http_requests_total counter
+soroindex_http_requests_total{route="GET /v1/stats",code="200"} 1
+soroindex_http_requests_total{route="GET /v1/stats",code="400"} 1
+# TYPE soroindex_http_request_duration_seconds histogram
+soroindex_http_request_duration_seconds_bucket{route="GET /v1/stats",le="0.005"} 2
+...
+soroindex_http_request_duration_seconds_bucket{route="GET /v1/stats",le="+Inf"} 2
+soroindex_http_request_duration_seconds_sum{route="GET /v1/stats"} 0.00163385
+soroindex_http_request_duration_seconds_count{route="GET /v1/stats"} 2
+```
+
 ## Docker validation
 
 The local image `soroindex:stage-gh` was built on 9 October 2026. In this cloud

@@ -4,6 +4,8 @@
 
 - Add a strong `ETag` to every successful `/v1` GET and answer a matching
   `If-None-Match` with 304 (#104).
+- Assign each API request an `X-Request-ID`, write one structured access log line
+  per request, and add `serve --metrics` for a Prometheus-text `/metrics` (#105).
 - Add `GET /v1/contracts?ids=...`, a bulk lookup of up to 100 contract IDs that
   reports unknown IDs in `not_found` and charges the rate limit per 10 IDs (#114).
 - Add `sep47idx inspect <file.wasm>`, which runs the indexer's analysis on a local
